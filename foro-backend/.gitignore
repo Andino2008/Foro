@@ -1,6 +1,11 @@
 # Dependencias de Composer (se instalan solas con composer install)
 /vendor/
 
+# Archivos de configuración locales y secretos
+.env
+config/.env
+*.env
+
 # Archivos del sistema operativo
 .DS_Store
 Thumbs.db

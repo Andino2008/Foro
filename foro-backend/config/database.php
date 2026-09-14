@@ -5,6 +5,11 @@
 // ==============================================================================
 // Este archivo se encarga de abrir una sola conexión con la base de datos
 // y reutilizarla en todo el sistema para no saturar la memoria ni el servidor.
+//
+// 🔒 SEGURIDAD:
+// La cadena de conexión y credenciales NUNCA se escriben en texto plano acá.
+// Se leen dinámicamente desde la variable de entorno 'MONGODB_URI' configurada
+// en Render o en un archivo .env local protegido por .gitignore.
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -17,11 +22,26 @@ class Database {
     public static function getDatabase() {
         if (self::$client === null) {
             try {
-                // Cadena de conexión a MongoDB Atlas (Nube Oficial)
-                // Permite usar variable de entorno 'MONGODB_URI' si existe, o el enlace de Atlas directo
-                $uri = getenv('MONGODB_URI') ?: "mongodb+srv://andinoenzo40_db_user:t8w8PDZYD2YBrNfP@foro.bjorb3s.mongodb.net/?appName=foro";
+                // 1. Buscamos la variable de entorno MONGODB_URI (Render / Servidor de Producción)
+                $uri = getenv('MONGODB_URI') ?: ($_ENV['MONGODB_URI'] ?? $_SERVER['MONGODB_URI'] ?? null);
+
+                // 2. Si no existe en el sistema, buscamos en un archivo .env local si existiera
+                if (!$uri) {
+                    if (file_exists(__DIR__ . '/.env')) {
+                        $env = parse_ini_file(__DIR__ . '/.env');
+                        $uri = $env['MONGODB_URI'] ?? null;
+                    } elseif (file_exists(__DIR__ . '/../.env')) {
+                        $env = parse_ini_file(__DIR__ . '/../.env');
+                        $uri = $env['MONGODB_URI'] ?? null;
+                    }
+                }
+
+                // 3. Si aún no hay URI configurada, lanzamos un mensaje claro de configuración
+                if (!$uri) {
+                    throw new \Exception('No se encontró la variable de entorno MONGODB_URI. Por favor configurala en el panel de Render o en tu archivo .env local.');
+                }
                 
-                // Creamos el cliente oficial de MongoDB
+                // Creamos el cliente oficial de MongoDB con la URI segura
                 self::$client = new Client($uri);
 
                 // Enviamos una orden 'ping' de prueba para verificar que la nube responde
@@ -31,7 +51,7 @@ class Database {
                 http_response_code(500);
                 die(json_encode([
                     'status'  => 'error',
-                    'message' => 'Fallo la conexión con MongoDB Atlas en la nube: ' . $e->getMessage()
+                    'message' => 'Fallo la conexión con MongoDB Atlas: ' . $e->getMessage()
                 ], JSON_UNESCAPED_UNICODE));
             }
         }
