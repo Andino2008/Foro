@@ -51,6 +51,8 @@ function handleRoute() {
     if (hash === "home" || hash === "") {
         if (breadcrumbExtra) breadcrumbExtra.innerHTML = "";
         loadForumHome();
+    } else if (hash === "profile") {
+        openProfileView();
     } else if (hash.startsWith("category/")) {
         // Ejemplo: '#category/general' -> catId = 'general'
         const catId = hash.split("/")[1];
@@ -140,6 +142,7 @@ async function loadCategoryView(catId) {
     try {
         const res = await fetch(`/api/category/${catId}`);
         const category = await res.json();
+        const userProfile = getLocalUserProfile();
 
         // Actualizamos la ruta en la barra de navegación (Breadcrumb)
         if (breadcrumbExtra) {
@@ -162,7 +165,7 @@ async function loadCategoryView(catId) {
                 <h3 style="margin-top:0;">📝 Publicar un nuevo Hilo</h3>
                 <p>
                     <label><strong>Tu Nombre / Nick:</strong></label><br>
-                    <input type="text" id="new-thread-author" placeholder="Ej: Enzo" style="width:250px;">
+                    <input type="text" id="new-thread-author" value="${escapeHtml(userProfile.username)}" placeholder="Tu nick o alias..." style="width:250px;">
                 </p>
                 <p>
                     <label><strong>Título del Tema:</strong></label><br>
@@ -267,6 +270,7 @@ async function submitNewThread(catId) {
 
         const data = await res.json();
         if (data.status) {
+            incrementUserPostCount(author);
             status.innerHTML = "<span style='color:green;'>¡Hilo publicado con éxito!</span>";
             setTimeout(() => {
                 // Redirigimos al hilo recién creado
@@ -299,6 +303,7 @@ async function loadThreadView(threadId, page = 1) {
             breadcrumbExtra.innerHTML = ` &gt; <a href="#thread/${thread.id}">${escapeHtml(thread.title || thread.titulo)}</a>`;
         }
 
+        const userProfile = getLocalUserProfile();
         const creatorName = thread.creator?.username || thread.autor || "Anónimo";
         const totalMsgs = thread.total_mensajes || (thread.posts ? thread.posts.length : 1);
         const limit = thread.limite_mensajes || 300;
@@ -364,7 +369,7 @@ async function loadThreadView(threadId, page = 1) {
                     <div class="reply-form-box">
                         <h3 style="margin-top:0; font-size:12px; color:#1E3B5E;">💬 Responder al Tema</h3>
                         <p>
-                            <input type="text" id="reply-author" placeholder="Tu Nombre / Nick" style="width:200px; margin-bottom:8px; font-size:11px;">
+                            <input type="text" id="reply-author" value="${escapeHtml(userProfile.username)}" placeholder="Tu Nombre / Nick" style="width:200px; margin-bottom:8px; font-size:11px;">
                         </p>
                         <textarea id="reply-text" style="width:100%; height:75px; font-family: 'Verdana', sans-serif; font-size:11px; margin-bottom:10px;" placeholder="Escribe tu respuesta..."></textarea>
                         <button onclick="submitReply('${thread.id}')" style="font-weight:bold; padding:6px 18px; background:#2B4E73; color:#FFF; cursor:pointer; border:1px solid #142840;">Enviar Respuesta</button>
@@ -505,6 +510,7 @@ async function submitReply(threadId) {
         const data = await res.json();
 
         if (res.ok) {
+            incrementUserPostCount(author);
             // Si el hilo fue purgado porque llegó al límite máximo:
             if (data.hilo_borrado) {
                 alert("🗑️ " + data.mensaje);
@@ -529,38 +535,92 @@ async function submitReply(threadId) {
 }
 
 /**
- * 🧑‍💻 5. Perfil de Usuario
+ * 🧑‍💻 5. Sistema de Perfil Independiente por Dispositivo (localStorage)
  */
+function getLocalUserProfile() {
+    let raw = localStorage.getItem('forum_user_profile');
+    if (!raw) {
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const defaultProfile = {
+            username: `Anon_${randomNum}`,
+            rank: 'Miembro de la Comunidad',
+            join_date: 'Sep 2026',
+            my_posts: 0
+        };
+        localStorage.setItem('forum_user_profile', JSON.stringify(defaultProfile));
+        return defaultProfile;
+    }
+    try {
+        return JSON.parse(raw);
+    } catch(e) {
+        return { username: 'Anónimo', rank: 'Miembro', join_date: 'Sep 2026', my_posts: 0 };
+    }
+}
+
+function saveLocalUserProfile(nick, rank) {
+    let p = getLocalUserProfile();
+    p.username = (nick && nick.trim()) ? nick.trim() : 'Anónimo';
+    p.rank = (rank && rank.trim()) ? rank.trim() : 'Miembro de la Comunidad';
+    localStorage.setItem('forum_user_profile', JSON.stringify(p));
+    return p;
+}
+
+function incrementUserPostCount(nick) {
+    let p = getLocalUserProfile();
+    if (nick && nick.trim()) {
+        p.username = nick.trim();
+    }
+    p.my_posts = (p.my_posts || 0) + 1;
+    localStorage.setItem('forum_user_profile', JSON.stringify(p));
+}
+
 function openProfileView() {
     const main = document.getElementById('main-content');
     const breadcrumbExtra = document.getElementById('breadcrumb-extra');
     if (!main) return;
     if (breadcrumbExtra) breadcrumbExtra.innerHTML = ' &gt; Mi Perfil';
 
+    const p = getLocalUserProfile();
+
     main.innerHTML = `
         <div class="thread-header">
-            <h2>🧑‍💻 Panel de Perfil</h2>
-            <div class="sub-text">Datos del usuario y estadísticas del foro.</div>
+            <h2>🧑‍💻 Panel de Mi Perfil</h2>
+            <div class="sub-text">Configurá tu identidad y nombre público para este celular o computadora.</div>
         </div>
-        <div class="post-container" style="padding:15px; display:block;">
-            <div style="font-weight:bold; margin-bottom:8px;">Mi Cuenta</div>
-            <div id="profile-account-meta">Cargando datos del perfil...</div>
+        <div class="post-container" style="padding:15px; display:block; background:#FFFFFF; border:1px solid #A9B8C7;">
+            <h3 style="margin-top:0; color:#1E3B5E;">👤 Datos de Tu Cuenta en este Dispositivo</h3>
+            
+            <div style="margin-top:12px;">
+                <p style="margin-bottom:10px;">
+                    <label><strong>Tu Nick / Nombre público:</strong></label><br>
+                    <input type="text" id="profile-nick-input" value="${escapeHtml(p.username)}" style="width:100%; max-width:280px; padding:6px; font-size:12px; margin-top:4px;">
+                </p>
+                <p style="margin-bottom:10px;">
+                    <label><strong>Tu Rango / Título personal:</strong></label><br>
+                    <input type="text" id="profile-rank-input" value="${escapeHtml(p.rank)}" style="width:100%; max-width:280px; padding:6px; font-size:12px; margin-top:4px;">
+                </p>
+                <div style="background:#F4F7F9; border:1px solid #CCD6E0; padding:10px; margin:15px 0; font-size:11px;">
+                    <div>📅 Fecha de Ingreso: <strong>${escapeHtml(p.join_date)}</strong></div>
+                    <div style="margin-top:4px;">💬 Mensajes publicados por vos desde este dispositivo: <strong>${p.my_posts || 0}</strong></div>
+                </div>
+
+                <button onclick="handleSaveProfile()" style="font-weight:bold; padding:8px 18px; background:#2B4E73; color:#FFF; border:1px solid #142840; cursor:pointer;">
+                    💾 Guardar Mi Perfil
+                </button>
+                <div id="profile-save-status" style="margin-top:8px;"></div>
+            </div>
         </div>
     `;
+}
 
-    fetch('/api/user/me')
-        .then(res => res.json())
-        .then(user => {
-            const meta = document.getElementById('profile-account-meta');
-            if (meta) {
-                meta.innerHTML = `
-                    <div>Nick: <strong>${escapeHtml(user.username)}</strong></div>
-                    <div>Rango: <strong>${escapeHtml(user.rank || 'Usuario')}</strong></div>
-                    <div>Fecha de Ingreso: <strong>${escapeHtml(user.join_date)}</strong></div>
-                    <div>Total de Posts en el foro: <strong>${user.post_count}</strong></div>
-                `;
-            }
-        });
+function handleSaveProfile() {
+    const nick = document.getElementById('profile-nick-input').value;
+    const rank = document.getElementById('profile-rank-input').value;
+    saveLocalUserProfile(nick, rank);
+    const status = document.getElementById('profile-save-status');
+    if (status) {
+        status.innerHTML = `<span style="color:green; font-weight:bold;">✅ ¡Perfil guardado! Ahora publicarás como <strong>${escapeHtml(nick || 'Anónimo')}</strong>.</span>`;
+    }
 }
 
 /**
