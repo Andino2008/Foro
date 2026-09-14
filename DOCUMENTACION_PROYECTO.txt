@@ -5,11 +5,17 @@
 
 FICHA TECNICA:
 - Nombre del Sistema: ForoPrueba2002 (Mini 4chan / vBulletin Engine)
-- Lider de Proyecto & Desarrollador: Enzo Andino
 - Area / Especialidad: Programacion Web, Arquitectura de Software y Bases de Datos
 - Estado Actual: Version 1.0 - Desplegada en Produccion y Operativa en la Nube
 - Repositorio de Codigo: https://github.com/Andino2008/Foro
 - Acceso en la Nube: Desplegado en Docker sobre Render.com y MongoDB Atlas
+
+EQUIPO DE DESARROLLO Y ROLES:
+- Lider del Proyecto: Enzo
+- Desarrollador Backend: Enzo
+- Desarrolladores Frontend: Ivan y Enzo
+- Desarrollador de HUD (Interfaz / UI / Estilos Retro): Ignacio
+- Testeador Principal (QA / Control de Calidad): Ortiz
 
 
 ================================================================================
@@ -17,7 +23,7 @@ FICHA TECNICA:
 ================================================================================
 
 1.1 OBJETIVO GENERAL:
-Disenar, programar e implementar desde cero una plataforma web integral de foro 
+Disenar, programar e implementar en equipo una plataforma web integral de foro 
 comunitario e interactivo con estetica clasica de los anos 2000 (estilo vBulletin 
 y phpBB), sustentada sobre una arquitectura desacoplada de alto rendimiento 
 compuesta por un Backend en PHP nativo (API REST) y una base de datos NoSQL 
@@ -26,26 +32,32 @@ movil total y un sistema innovador de ciclo de vida de mensajes para optimizacio
 de almacenamiento.
 
 1.2 OBJETIVOS ESPECIFICOS:
-1. Desarrollar una API REST robusta en PHP nativo mediante un enrutador central 
-   (Single Entry Point), procesando peticiones HTTP (GET, POST), manejando 
-   respuestas estructuradas en JSON, control de cabeceras CORS y codigos de 
-   estado sin depender de frameworks externos.
-2. Implementar Persistencia NoSQL con MongoDB para las colecciones de hilos y 
-   respuestas, aplicando consultas optimizadas, inserciones atomicas, ordenamiento 
-   cronologico e indexacion por identificadores ObjectId.
+1. Desarrollar una API REST robusta en PHP nativo (Backend - Enzo) mediante un 
+   enrutador central (Single Entry Point), procesando peticiones HTTP (GET, POST), 
+   manejando respuestas estructuradas en JSON, control de cabeceras CORS y codigos 
+   de estado sin depender de frameworks externos.
+2. Implementar Persistencia NoSQL con MongoDB (Backend - Enzo) para las 
+   colecciones de hilos y respuestas, aplicando consultas optimizadas, inserciones 
+   atomicas, ordenamiento cronologico e indexacion por identificadores ObjectId.
 3. Crear una mecanica de Supervivencia y Auto-Purgado (Bump Limit Gamificado): 
    cada hilo nace con limite inicial de 300 mensajes ampliable por votacion 
    comunitaria (+100 msgs hasta 3 veces), con auto-borrado atomico al llegar al 
    tope para no saturar el espacio gratuito en la nube.
-4. Construir una Interfaz SPA (Single Page Application) Responsive en HTML5, 
-   CSS3 retro y JavaScript Vanilla (fetch asincrono y Hash Routing), brindando 
-   una experiencia fluida sin recarga de pantalla y adaptada a celulares.
-5. Desarrollar un sistema de perfiles descentralizado mediante localStorage, 
-   permitiendo a cada usuario personalizar su propio alias y rango desde su 
-   dispositivo.
-6. Desplegar la plataforma en la nube (Docker + Render + MongoDB Atlas) con 
-   integracion continua (CI/CD con GitHub) y seguridad de credenciales por 
-   variables de entorno (MONGODB_URI).
+4. Disenar el HUD y Maquetacion Retro (HUD/UI - Ignacio): Crear la identidad 
+   visual inspirada en el ano 2002 con paleta retro, tablas con cabeceras en 
+   degradado, cursores SVG pixelados de Windows 98 y diseno responsive.
+5. Construir una Interfaz SPA Responsive (Frontend - Ivan y Enzo): Desarrollar el 
+   frontend en JavaScript Vanilla (fetch asincrono y Hash Routing), brindando 
+   una experiencia fluida sin recargas de pantalla y adaptada a celulares.
+6. Desarrollar un sistema de perfiles descentralizado mediante localStorage 
+   (Frontend - Ivan y Enzo), permitiendo a cada usuario personalizar su propio 
+   alias y rango desde su dispositivo.
+7. Testing y Control de Calidad (QA - Ortiz): Ejecutar pruebas continuas de 
+   usabilidad, validacion de formularios, deteccion de errores en celulares y 
+   verificacion de la integridad de datos en la nube.
+8. Desplegar la plataforma en la nube (DevOps - Enzo): Docker + Render + 
+   MongoDB Atlas con integracion continua (CI/CD con GitHub) y seguridad de 
+   credenciales por variables de entorno (MONGODB_URI).
 
 
 ================================================================================
@@ -64,74 +76,88 @@ ARQUITECTURA:
        |
        | (Peticiones HTTP GET / POST - JSON)
        v
-[ Frontend SPA: HTML5 + CSS Retro + JavaScript Vanilla ]
+[ Frontend SPA: HTML5 + CSS Retro (Ignacio) + JS (Ivan/Enzo) ]
        |
        | (Llamadas asincronas con fetch API)
        v
-[ Backend API REST: PHP 8.2+ en Contenedor Docker (Render) ]
+[ Backend API REST: PHP 8.2+ en Contenedor Docker (Enzo) ]
        |
        | (Driver Oficial MongoDB PHP / TLS Seguro)
        v
 [ Base de Datos NoSQL: MongoDB Atlas Cluster M0 (Nube) ]
        ├── Coleccion 'hilos' (Temas principales y limites de vida)
        └── Coleccion 'respuestas' (Comentarios vinculados por ObjectId)
+       |
+[ Control de Calidad & Pruebas en Vivo: Ortiz ]
 
 2.2 COMPONENTES TECNICOS:
-- Backend & Router REST (public/index.php): Recibe todas las peticiones bajo el 
-  patron Front Controller y responde en formato JSON a rutas como /api/forum, 
-  /api/category/{id}, /api/threads, /api/thread/{id}, /api/thread/{id}/reply, 
-  /api/thread/{id}/extender y /api/search.
-- Capa de Base de Datos (config/database.php): Conexion Singleton a MongoDB 
-  Atlas para reutilizar una unica conexion eficiente y segura.
-- Mecanica de Supervivencia: Controla el espacio en disco. Los hilos nacen con 
-  300 mensajes. Al juntar 3 votos se extienden +100 mensajes (maximo 3 veces). 
-  Al llegar al limite maximo final, se ejecuta deleteOne() y deleteMany() 
-  automaticamente en MongoDB.
-- Frontend SPA y Responsive (forum.js y classic.css): Hash routing (#home, 
-  #category/..., #thread/..., #profile), diseno adaptado al 100% para celulares 
-  con media queries, y gestion de perfiles con localStorage.
+- Backend & Router REST (public/index.php) [Enzo]: Recibe todas las peticiones 
+  bajo el patron Front Controller y responde en formato JSON a rutas como 
+  /api/forum, /api/category/{id}, /api/threads, /api/thread/{id}, 
+  /api/thread/{id}/reply, /api/thread/{id}/extender y /api/search.
+- Capa de Base de Datos (config/database.php) [Enzo]: Conexion Singleton a 
+  MongoDB Atlas para reutilizar una unica conexion eficiente y segura.
+- Mecanica de Supervivencia [Enzo, Ivan e Ignacio]: Controla el espacio en 
+  disco. Los hilos nacen con 300 mensajes. Al juntar 3 votos se extienden +100 
+  mensajes (maximo 3 veces). Al llegar al limite final se ejecuta deleteOne() y 
+  deleteMany() automaticamente en MongoDB, con feedback visual de confeti.
+- Diseno de HUD y Estilos Retro (classic.css) [Ignacio]: Paleta retro estilo 
+  vBulletin 2002, cursores SVG de Windows 98 y adaptabilidad responsive con 
+  media queries para celulares.
+- Frontend SPA y Logica de Cliente (forum.js) [Ivan y Enzo]: Hash routing 
+  (#home, #category/..., #thread/..., #profile), gestion de perfiles con 
+  localStorage y autorelleno de autor.
+- Control de Calidad y Pruebas [Ortiz]: Pruebas en smartphones reales (Android/iOS), 
+  deteccion de bugs de identidad y pruebas de estres del auto-purgado.
 
 
 ================================================================================
 3. CRONOGRAMA DE TRABAJO (3 SEMANAS EJECUTADAS + 2 SEMANAS PROYECTADAS)
 ================================================================================
 
-ETAPA EJECUTADA (3 SEMANAS DE DESARROLLO INTENSIVO):
+ETAPA EJECUTADA (3 SEMANAS DE DESARROLLO INTENSIVO EN EQUIPO):
 
 - SEMANA 1: PLANIFICACION, ARQUITECTURA Y CONEXION DE DATOS
-  * Analisis de requerimientos y seleccion del stack tecnologico (PHP + MongoDB).
-  * Estructuracion de documentos NoSQL (hilos y respuestas) con claves ObjectId.
-  * Configuracion del entorno PHP 8.2/8.5 con Composer y driver oficial de MongoDB.
-  * Superacion de desafios tecnicos en Windows (extension de MongoDB y patron Singleton).
+  * Coordinacion y Requerimientos (Lider: Enzo): Definicion de arquitectura y tareas.
+  * Modelado NoSQL (Enzo): Documentos en MongoDB con claves ObjectId.
+  * Prototipado de HUD (Ignacio): Bocetos retro y esquema de tablas para la interfaz.
+  * Configuracion del Entorno (Enzo e Ivan): PHP 8.2+, Composer, driver oficial de 
+    MongoDB y configuracion de php.ini en Windows.
+  * Testing Inicial (Ortiz): Verificacion de lectura y escritura local en MongoDB.
 
 - SEMANA 2: DESARROLLO DEL BACKEND REST Y LOGICA DE NEGOCIO
-  * Construccion del Router REST centralizado en PHP para solicitudes GET y POST.
-  * Programacion de endpoints de categorias, hilos, respuestas y buscador con Regex.
-  * Desarrollo del algoritmo de supervivencia comunitaria y purgado automatico 
-    (deleteOne y deleteMany).
-  * Pruebas de persistencia y conteo concurrente en base de datos.
+  * Router REST & Endpoints (Enzo): Programacion del enrutador central en PHP para 
+    solicitudes GET y POST con respuestas JSON.
+  * Algoritmo de Supervivencia (Enzo e Ivan): Logica de votacion comunitaria (+100 
+    msgs) y auto-purgado en MongoDB (deleteOne y deleteMany).
+  * Maquetacion Base del HUD (Ignacio): Estilos en classic.css, tablas y cursores.
+  * Buscador por Palabras Clave (Enzo): Endpoint con expresiones regulares (Regex).
+  * Pruebas de Backend (Ortiz): Validacion de endpoints y control de errores HTTP.
 
 - SEMANA 3: FRONTEND SPA, RESPONSIVIDAD MOVIL, DESPLIEGUE CLOUD Y SEGURIDAD
-  * Diseno de la interfaz retro 2002 (classic.css) y SPA asincrona (forum.js).
-  * Adaptacion responsive total para celulares con media queries y barra tactil.
-  * Sistema de identidad independiente por dispositivo con localStorage.
-  * Creacion del Dockerfile, integracion continua (CI/CD) con GitHub y despliegue 
-    en Render.com conectado a MongoDB Atlas.
-  * Auditoria de seguridad: sanitizacion de credenciales mediante variables de 
+  * Frontend SPA (Ivan y Enzo): Controlador forum.js con Hash Routing y fetch.
+  * Adaptabilidad Movil del HUD (Ignacio y Ortiz): Ajuste de media queries para 
+    disposicion vertical tactil en celulares.
+  * Sistema de Perfiles (Ivan y Enzo): Modulo localStorage para identidad por 
+    dispositivo y autorelleno de campos.
+  * Despliegue Cloud & DevOps (Enzo): Dockerfile, integracion continua (CI/CD) con 
+    GitHub y hosting en Render.com conectado a MongoDB Atlas.
+  * Auditoria de Seguridad (Enzo): Sanitizacion de credenciales con variables de 
     entorno (MONGODB_URI) y proteccion contra ataques XSS.
+  * Pruebas de Campo (Ortiz): Pruebas en smartphones reales de los integrantes, 
+    detectando y validando la solucion a problemas de visualizacion e identidad.
 
 ETAPA PROYECTADA A FUTURO (2 SEMANAS DE CIERRE):
 
-- SEMANA 4: PRUEBAS DE ESTRES, BETA TESTING Y MODERACION
-  * Distribucion del foro entre companeros de clase para pruebas masivas en 
-    diferentes celulares y computadoras.
-  * Medicion de tiempos de respuesta del contenedor en Render y uso del cluster Atlas.
-  * Incorporacion de filtro basico de palabras o moderacion para entorno escolar.
+- SEMANA 4: PRUEBAS MASIVAS, BETA TESTING Y MODERACION
+  * Pruebas de estres con companeros de curso en Render y MongoDB Atlas (Ortiz y Equipo).
+  * Pulido de detalles visuales del HUD (Ignacio).
+  * Modulo de moderacion y filtrado de palabras basicas (Enzo e Ivan).
 
 - SEMANA 5: OPTIMIZACION FINAL, DOCUMENTACION Y PRESENTACION
-  * Creacion de indices compuestos en MongoDB para optimizar velocidad de consulta.
-  * Preparacion de diapositivas tecnicas y material visual para la defensa del proyecto.
-  * Demostracion en vivo y entrega formal del informe ante los profesores.
+  * Optimizacion de indices en MongoDB para velocidad de consulta (Enzo).
+  * Elaboracion de diapositivas y material de exposicion (Todo el Equipo).
+  * Demostracion en vivo y defensa formal del proyecto ante los docentes.
 
 
 ================================================================================
@@ -140,9 +166,10 @@ ETAPA PROYECTADA A FUTURO (2 SEMANAS DE CIERRE):
 
 - Entidad Solicitante: Institucion Educativa / Departamento de Informatica y Programacion.
 - Equipo Evaluador: Profesores y directivos del area tecnica encargados de calificar 
-  el dominio en desarrollo backend, bases de datos NoSQL, interfaces web y DevOps.
+  el dominio en desarrollo backend, bases de datos NoSQL, diseno de interfaces, 
+  trabajo en equipo y DevOps.
 - Requerimientos del Cliente:
-  * Crear una solucion funcional completa desde cero sin utilizar generadores automaticos.
+  * Crear una solucion funcional completa desde cero trabajando en equipo.
   * Demostrar separacion de capas (Backend API / Frontend SPA / Base de Datos).
   * Justificar el uso de NoSQL y resolver problemas de optimizacion de recursos en la nube.
 
@@ -164,12 +191,33 @@ ETAPA PROYECTADA A FUTURO (2 SEMANAS DE CIERRE):
 6. RECURSOS UTILIZADOS
 ================================================================================
 
-6.1 RECURSOS HUMANOS:
-- Lider de Proyecto & Desarrollador Full-Stack (Enzo Andino): Diseno general, 
-  programacion en PHP nativo, desarrollo frontend en JS/CSS, administracion de 
-  MongoDB y despliegue en Render/Docker.
+6.1 RECURSOS HUMANOS (EQUIPO DE PROYECTO):
+- Enzo (Lider del Proyecto & Desarrollador Backend):
+  * Coordinacion general y definicion de la arquitectura tecnica.
+  * Desarrollo del backend en PHP nativo (API REST) y conexion Singleton a MongoDB.
+  * Algoritmo de supervivencia y auto-purgado (deleteOne / deleteMany).
+  * Contenedor Docker, integracion continua en GitHub y despliegue en Render.com.
+  * Co-desarrollo de la logica SPA en JavaScript y seguridad de variables de entorno.
+
+- Ivan (Desarrollador Frontend):
+  * Desarrollo de la logica del cliente en JavaScript Vanilla (forum.js).
+  * Implementacion del enrutamiento por hash (#home, #category/..., #thread/...).
+  * Integracion de llamadas asincronas con fetch hacia la API de PHP.
+  * Implementacion de perfiles independientes por dispositivo con localStorage.
+
+- Ignacio (Desarrollador de HUD & UI):
+  * Diseno de la interfaz de usuario (HUD) y estilos visuales en classic.css.
+  * Creacion de la identidad retro de 2002 inspirada en vBulletin y phpBB.
+  * Diseno de cursores SVG pixelados tematicos de Windows 98.
+  * Maquetacion responsive adaptable para celulares y tablets con media queries.
+
+- Ortiz (Testeador Principal / QA):
+  * Planificacion y ejecucion de pruebas de estres y validacion funcional.
+  * Control de calidad en smartphones reales (Android / iOS).
+  * Deteccion y reporte de fallos de interfaz, usabilidad y persistencia.
+  * Validacion del auto-purgado y votaciones comunitarias en tiempo real.
+
 - Equipo Docente / Asesores: Guia academica y definicion de criterios de evaluacion.
-- Beta Testers (Companeros de curso): Pruebas de campo en celulares reales.
 
 6.2 RECURSOS MATERIALES Y TECNOLOGICOS:
 - Hardware: Computadoras x64 (8GB+ RAM) y smartphones de prueba (Android/iOS).
@@ -184,7 +232,8 @@ ETAPA PROYECTADA A FUTURO (2 SEMANAS DE CIERRE):
 ================================================================================
 7. CONCLUSION Y APRENDIZAJES CLAVE
 ================================================================================
-El proyecto ForoPrueba2002 demostro que es posible construir una aplicacion web 
-moderna, escalable y segura utilizando tecnologias nativas sin intermediarios. 
-Permitio afianzar el dominio de APIs REST, bases de datos no relacionales, 
-algoritmos de gestion de recursos en la nube y adaptabilidad multidispositivo.
+El desarrollo de ForoPrueba2002 demostro que el trabajo coordinado en equipo 
+permite construir una aplicacion web completa, escalable y segura utilizando 
+tecnologias nativas sin intermediarios. Permitio afianzar el dominio de APIs REST, 
+bases de datos no relacionales, diseno de interfaces adaptables, aseguramiento 
+de la calidad (QA) y despliegue profesional en la nube.

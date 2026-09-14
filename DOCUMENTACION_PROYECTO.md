@@ -5,26 +5,34 @@
 
 ### 📌 FICHA TÉCNICA DEL PROYECTO
 * **Nombre del Sistema:** ForoPrueba2002 (Mini 4chan / vBulletin Engine)
-* **Líder de Proyecto & Desarrollador:** Enzo Andino
 * **Área / Especialidad:** Programación Web, Arquitectura de Software y Bases de Datos
 * **Estado Actual:** Versión 1.0 - Desplegada en Producción y Operativa en la Nube
 * **Repositorio de Código:** `https://github.com/Andino2008/Foro`
 * **Acceso Público en la Nube:** Desplegado mediante contenedores Docker en Render y base de datos distribuida en MongoDB Atlas.
+
+#### 👥 Equipo de Desarrollo y Roles:
+* 👑 **Líder del Proyecto:** Enzo
+* ⚙️ **Desarrollador Backend:** Enzo
+* 🌐 **Desarrolladores Frontend:** Iván y Enzo
+* 🎨 **Desarrollador de HUD (Interfaz / UI / Estilos Retro):** Ignacio
+* 🔍 **Testeador Principal (QA / Control de Calidad):** Ortiz
 
 ---
 
 ## 1. 🎯 OBJETIVO
 
 ### 1.1 Objetivo General
-Diseñar, programar e implementar desde cero una plataforma web integral de foro comunitario e interactivo con estética clásica de los años 2000 (estilo *vBulletin* y *phpBB*), sustentada sobre una arquitectura desacoplada de alto rendimiento compuesta por un **Backend en PHP nativo (API REST)** y una base de datos **NoSQL orientada a documentos (MongoDB Atlas)**, con despliegue en la nube, compatibilidad móvil total y un sistema innovador de ciclo de vida de mensajes para optimización de almacenamiento.
+Diseñar, programar e implementar en equipo una plataforma web integral de foro comunitario e interactivo con estética clásica de los años 2000 (estilo *vBulletin* y *phpBB*), sustentada sobre una arquitectura desacoplada de alto rendimiento compuesta por un **Backend en PHP nativo (API REST)** y una base de datos **NoSQL orientada a documentos (MongoDB Atlas)**, con despliegue en la nube, compatibilidad móvil total y un sistema innovador de ciclo de vida de mensajes para optimización de almacenamiento.
 
 ### 1.2 Objetivos Específicos
-1. **Desarrollar una API REST robusta en PHP nativo:** Construir un enrutador central (*Single Entry Point*) que procese solicitudes asíncronas bajo el estándar HTTP, manejando respuestas estructuradas en formato JSON, control de cabeceras CORS y códigos de estado HTTP estandarizados sin depender de frameworks externos.
-2. **Implementar Persistencia NoSQL con MongoDB:** Diseñar un modelo de datos documental no relacional eficiente para las colecciones de hilos y respuestas, aplicando consultas optimizadas, inserciones atómicas, ordenamiento temporal e indexación por identificadores `ObjectId`.
-3. **Mecánica de Supervivencia y Auto-Purgado (*Bump Limit Gamificado*):** Desarrollar un algoritmo automatizado que controle el ciclo de vida de los temas. Cada hilo cuenta con un límite inicial de mensajes (300 msgs) que puede ser ampliado por la comunidad mediante votación colectiva (+100 msgs, hasta 3 veces). Al agotarse las extensiones y alcanzarse el tope máximo, el sistema ejecuta un purgado atómico (`deleteOne` y `deleteMany`) para evitar la saturación de espacio.
-4. **Construir una Interfaz SPA (Single Page Application) Responsive:** Desarrollar el frontend utilizando HTML5 semántico, CSS3 retro con cursores temáticos y JavaScript Vanilla asíncrono (`fetch`), con un sistema de enrutamiento por hash (`#category/...`, `#thread/...`, `#profile`, `#search`), garantizando una experiencia fluida sin recargas de página y con adaptabilidad táctil para smartphones y tablets.
-5. **Privacidad y Perfiles Descentralizados:** Implementar una gestión de identidad local por dispositivo mediante `localStorage`, permitiendo que cada usuario defina su propio alias y rango sin necesidad de contraseñas complejas, pre-llenando automáticamente sus datos en los formularios de publicación.
-6. **Despliegue Continuo (CI/CD) y Seguridad en la Nube:** Contenedorizar la aplicación utilizando **Docker**, configurar la integración automática con **GitHub** hacia **Render.com** y proteger las credenciales de acceso a la base de datos mediante variables de entorno seguras (`MONGODB_URI`).
+1. **Desarrollar una API REST robusta en PHP nativo (Backend - Enzo):** Construir un enrutador central (*Single Entry Point*) que procese solicitudes asíncronas bajo el estándar HTTP, manejando respuestas estructuradas en formato JSON, control de cabeceras CORS y códigos de estado HTTP estandarizados sin depender de frameworks externos.
+2. **Implementar Persistencia NoSQL con MongoDB (Backend - Enzo):** Diseñar un modelo de datos documental no relacional eficiente para las colecciones de hilos y respuestas, aplicando consultas optimizadas, inserciones atómicas, ordenamiento temporal e indexación por identificadores `ObjectId`.
+3. **Mecánica de Supervivencia y Auto-Purgado (*Bump Limit Gamificado* - Backend/Frontend):** Desarrollar un algoritmo automatizado que controle el ciclo de vida de los temas. Cada hilo cuenta con un límite inicial de mensajes (300 msgs) que puede ser ampliado por la comunidad mediante votación colectiva (+100 msgs, hasta 3 veces). Al agotarse las extensiones y alcanzarse el tope máximo, el sistema ejecuta un purgado atómico (`deleteOne` y `deleteMany`) para evitar la saturación de espacio.
+4. **Diseñar el HUD y Maquetación Retro (HUD/UI - Ignacio):** Crear la identidad visual inspirada en el año 2002 con paleta retro, fuentes clásicas, ventanas temáticas, cursores SVG pixelados de Windows 98 y diseño adaptable mediante CSS3 para computadoras y celulares.
+5. **Construir una Interfaz SPA Responsive (Frontend - Iván y Enzo):** Desarrollar el frontend interactivo en JavaScript Vanilla asíncrono (`fetch`), con un sistema de enrutamiento por hash (`#category/...`, `#thread/...`, `#profile`, `#search`), garantizando fluidez sin recargas de página.
+6. **Privacidad y Perfiles Descentralizados (Frontend - Iván y Enzo):** Implementar una gestión de identidad local por dispositivo mediante `localStorage`, permitiendo que cada usuario defina su propio alias y rango sin necesidad de contraseñas complejas, pre-llenando automáticamente sus datos en los formularios.
+7. **Testing, Control de Calidad y Pruebas de Campo (QA - Ortiz):** Ejecutar pruebas continuas de usabilidad, validación de formularios, detección de errores en dispositivos móviles y verificación de integridad de datos en la nube.
+8. **Despliegue Continuo (CI/CD) y Seguridad (DevOps - Enzo):** Contenedorizar la aplicación utilizando **Docker**, configurar la integración automática con **GitHub** hacia **Render.com** y proteger las credenciales de acceso a la base de datos mediante variables de entorno seguras (`MONGODB_URI`).
 
 ---
 
@@ -42,23 +50,25 @@ Diseñar, programar e implementar desde cero una plataforma web integral de foro
 |         │                                                               |
 |         │ (HTTP GET/POST - Formato JSON)                                |
 |         ▼                                                               |
-|   [ Frontend SPA: HTML5 + CSS Retro + JavaScript Vanilla ]              |
+|   [ Frontend SPA: HTML5 + CSS Retro (Ignacio) + JS (Iván/Enzo) ]        |
 |         │                                                               |
 |         │ (Llamadas asíncronas con fetch API)                           |
 |         ▼                                                               |
-|   [ Backend API REST: PHP 8.2+ en Contenedor Docker (Render) ]          |
+|   [ Backend API REST: PHP 8.2+ en Contenedor Docker (Enzo) ]            |
 |         │                                                               |
 |         │ (Driver Oficial MongoDB PHP / Protocolo Seguro TLS)           |
 |         ▼                                                               |
 |   [ Base de Datos NoSQL: MongoDB Atlas Cluster M0 (Nube) ]             |
 |         ├── Colección 'hilos' (Temas principales y límites)            |
 |         └── Colección 'respuestas' (Comentarios vinculados)            |
+|                                                                         |
+|   [ Control de Calidad & Pruebas en Vivo: Ortiz ]                       |
 +-------------------------------------------------------------------------+
 ```
 
 ### 2.2 Componentes Técnicos Principales
 
-#### A. Backend & Enrutador REST (`public/index.php`)
+#### A. Backend & Enrutador REST (`public/index.php`) — *Responsable: Enzo*
 * **Arquitectura:** Patrón *Front Controller* (Punto de entrada único). Todas las solicitudes entrantes son interceptadas y canalizadas según el método HTTP (`GET`, `POST`) y la ruta solicitada.
 * **Manejo de Respuestas:** Respuestas en formato JSON con cabeceras `Content-Type: application/json; charset=UTF-8` y `Access-Control-Allow-Origin: *` para garantizar comunicación sin bloqueos de seguridad.
 * **Endpoints Implementados:**
@@ -71,78 +81,87 @@ Diseñar, programar e implementar desde cero una plataforma web integral de foro
   * `POST /api/thread/{id}/extender`: Registra votos comunitarios para ampliar el límite de mensajes del hilo (+100 msgs).
   * `GET /api/search?q={query}`: Realiza búsquedas de texto mediante expresiones regulares (*Regex* insensible a mayúsculas/minúsculas).
 
-#### B. Capa de Datos NoSQL (`config/database.php`)
-* **Patrón de Diseño Singleton:** Garantiza la apertura de una única instancia de conexión hacia el cluster de MongoDB, reutilizándola en cada petición para no agotar la memoria ni las conexiones del servidor.
+#### B. Capa de Datos NoSQL (`config/database.php`) — *Responsable: Enzo*
+* **Patrón de Diseño Singleton:** Garantiza la apertura de una única instancia de conexión hacia el cluster de MongoDB Atlas, reutilizándola en cada petición para no agotar la memoria ni las conexiones del servidor.
 * **Colecciones Documentales:**
   * `hilos`: Almacena el `titulo`, `contenido`, `autor`, `category_id`, `fecha`, `limite_mensajes`, `extensiones_usadas` y `votos_extension`.
   * `respuestas`: Almacena el `comentario`, `autor`, `fecha` y `id_hilo` (como referencia `ObjectId` al tema padre).
 
-#### C. Lógica de Supervivencia y Auto-Purgado
-* **Control de Capacidad:** Los servicios gratuitos de almacenamiento en la nube poseen límites de cuota fija. Para resolver este desafío técnico sin intervención manual de administradores, se creó un sistema de reciclaje dinámico:
-  1. Cada hilo nuevo se crea con un límite máximo de **300 mensajes**.
+#### C. Lógica de Supervivencia y Auto-Purgado — *Responsables: Enzo, Iván e Ignacio*
+* **Control de Capacidad:** Los servicios gratuitos de almacenamiento en la nube poseen límites de cuota fija. Para resolver este desafío técnico sin intervención manual de administradores, el equipo ideó un sistema de reciclaje dinámico:
+  1. Cada hilo nuevo nace con un límite máximo de **300 mensajes**.
   2. En la vista del hilo, se presenta un panel lateral de votación. Al reunir **3 votos de usuarios distintos**, el límite se incrementa en **+100 mensajes** (hasta un tope de 3 extensiones = 600 mensajes totales).
   3. Si un hilo alcanza su límite definitivo y ya consumió sus 3 extensiones, al recibir el siguiente mensaje se ejecutan las operaciones de borrado atómico en MongoDB:
      ```php
      $coleccionHilos->deleteOne(['_id' => new ObjectId($threadId)]);
      $coleccionRespuestas->deleteMany(['id_hilo' => new ObjectId($threadId)]);
      ```
-  4. La interfaz de usuario retroalimenta el evento con efectos visuales dinámicos de confeti y alertas informativas sin bloquear la pantalla.
+  4. La interfaz visual (diseñada por Ignacio) retroalimenta el evento con efectos visuales dinámicos de confeti y alertas toast no invasivas.
 
-#### D. Frontend SPA y Experiencia Responsive (`forum.js` & `classic.css`)
-* **Enrutamiento por Hash:** Permite navegar fluidamente entre categorías, hilos y búsquedas sin recargar la página web.
-* **Diseño Retro 2002:** Paleta de colores inspirada en foros clásicos (*vBulletin/phpBB*), botones con biselado clásico, marcos delimitados y cursores SVG pixelados de Windows 98.
-* **Adaptabilidad Móvil (Responsive):** Media queries completas (`@media (max-width: 768px)`) que reorganizan la barra lateral de votación, convierten tablas en tarjetas táctiles y apilan el formulario de respuestas para una experiencia perfecta en pantallas táctiles.
-* **Gestión de Identidad Local (`localStorage`):** Cada dispositivo genera un perfil anónimo único (ej: `Anon_7392`) que el usuario puede personalizar desde la sección "Mi Perfil" con su alias y rango, autorellenando los campos de autor automáticamente.
+#### D. Diseño del HUD y Estilos Retro (`classic.css`) — *Responsable: Ignacio*
+* **Estética Retro 2002:** Paleta de colores inspirada en foros clásicos (*vBulletin/phpBB*), tablas con cabeceras degradadas azuladas, marcos biselados, tipografía Verdana clásica y cursores SVG pixelados al estilo Windows 98.
+* **Maquetación Adaptable (Responsive):** Reglas CSS completas (`@media (max-width: 768px)`) que reorganizan la barra lateral de votación, apilan los formularios y adaptan la navegación táctil para celulares.
+
+#### E. Frontend SPA y Lógica de Cliente (`forum.js`) — *Responsables: Iván y Enzo*
+* **Enrutamiento por Hash:** Navegación instantánea entre categorías, hilos y búsquedas (`#home`, `#category/...`, `#thread/...`, `#profile`) mediante JavaScript asíncrono con `fetch`.
+* **Gestión de Identidad Local (`localStorage`):** Cada dispositivo genera y almacena un perfil propio (ej: `Anon_7392`), permitiendo a los usuarios editar su nick y rango desde "Mi Perfil", con autorelleno automático en los formularios de publicación.
+
+#### F. Control de Calidad y Testing Móvil — *Responsable: Ortiz*
+* Verificación de consistencia visual en navegadores de escritorio y smartphones reales (Android / iOS).
+* Pruebas de estrés enviando múltiples respuestas consecutivas para validar el comportamiento del auto-purgado en MongoDB.
+* Reporte y seguimiento de errores de interfaz y usabilidad.
 
 ---
 
-## 3. 📅 CRONOGRAMA DE TRABAJO
+## 3. 📅 CRONOGRAMA DE TRABAJO (5 SEMANAS TOTALES)
 
-El proyecto fue ejecutado a lo largo de **tres semanas de desarrollo intensivo**, resolviendo complejidades de infraestructura, programación nativa y diseño responsivo, con una proyección de **dos semanas adicionales** destinadas a control de calidad y presentación final.
+El proyecto demandó **tres semanas de trabajo intensivo en equipo**, donde cada integrante asumió responsabilidades clave para superar dificultades técnicas de backend, base de datos, maquetación y control de calidad, con una proyección de **dos semanas adicionales** para pruebas finales y exposición.
 
 ```
 LÍNEA DE TIEMPO DEL PROYECTO (5 SEMANAS TOTALES)
 [Semana 1] ───► [Semana 2] ───► [Semana 3] ───► [Semana 4] ───► [Semana 5]
   Análisis &      Backend &       Frontend,       Pruebas Beta    Optimización
- Arquitectura    Persistencia     Cloud & CI/CD   & Monitoreo    & Presentación
+ Arquitectura    Persistencia     HUD & Cloud     & Moderación    & Presentación
  (COMPLETADO)    (COMPLETADO)     (COMPLETADO)    (EN CURSO)      (A FUTURO)
 ```
 
 ### 3.1 Etapa Ejecutada (Semanas 1 a 3 - Desarrollo Completo)
 
 #### 🔹 Semana 1: Planificación, Arquitectura y Conexión de Datos
-* **Definición de Requerimientos:** Análisis de las necesidades de la comunidad escolar, elección del stack tecnológico (PHP nativo sin frameworks para mayor comprensión del código, base de datos NoSQL MongoDB por su flexibilidad documental).
-* **Diseño de Modelos Documentales:** Estructuración de los esquemas de documentos para hilos y respuestas, definiendo tipos de datos, relaciones por `ObjectId` y campos de control de vida útil.
-* **Entorno de Desarrollo y Dependencias:** Configuración de PHP 8.2+, gestor de paquetes Composer, instalación y compilación del driver oficial `mongodb/mongodb`.
-* **Desafíos Técnicos Superados:** Resolución de incompatibilidades de extensiones C en Windows mediante la configuración precisa del archivo `php.ini` y creación de la clase de conexión Singleton con control de excepciones.
+* **Coordinación y Requerimientos (Líder: Enzo):** Definición de la arquitectura desacoplada y distribución de tareas en el equipo.
+* **Modelado de Datos NoSQL (Enzo):** Diseño de la estructura documental en MongoDB (`hilos` y `respuestas`), relaciones por `ObjectId` y campos de conteo.
+* **Prototipado del HUD (Ignacio):** Bocetos iniciales de la estética retro de los 2000s y esquema de tablas para la interfaz.
+* **Configuración del Entorno (Enzo e Iván):** Instalación de PHP 8.2+, Composer, driver oficial de MongoDB y resolución de problemas de extensiones en Windows mediante configuración de `php.ini`.
+* **Testing Inicial (Ortiz):** Verificación de lectura y escritura local en MongoDB Community Server.
 
 #### 🔹 Semana 2: Desarrollo del Backend REST y Lógica de Negocio
-* **Implementación del Router REST:** Construcción del motor de rutas centralizado en `public/index.php` con soporte para métodos HTTP (`GET`, `POST`, `OPTIONS`) y decodificación de payloads JSON.
-* **Endpoints de Navegación y Publicación:** Creación de controladores para listar categorías, obtener hilos paginados y persistir temas nuevos en la base de datos.
-* **Algoritmo de Supervivencia y Auto-Purgado:** Programación de la lógica matemática de conteo de mensajes, acumulación de votos comunitarios (`votos_extension`), incremento condicional de límites y ejecución segura de borrados en cascada (`deleteOne` y `deleteMany`).
-* **Módulo de Búsqueda:** Integración del buscador por palabras clave utilizando operadores de expresión regular (`$regex`) insensibles a mayúsculas sobre los campos de título y contenido.
+* **Router REST & Endpoints (Enzo):** Programación del enrutador central en `public/index.php` con manejo de métodos HTTP (`GET`, `POST`) y codificación JSON.
+* **Algoritmo de Supervivencia (Enzo e Iván):** Implementación de la lógica de votación comunitaria (+100 msgs) y purgado automático en MongoDB (`deleteOne` y `deleteMany`).
+* **Maquetación Base de la Interfaz (Ignacio):** Construcción de los estilos en `classic.css`, diseño de tablas, banners temáticos y cursores SVG.
+* **Buscador por Palabras Clave (Enzo):** Creación del endpoint de búsqueda con expresiones regulares (*Regex*).
+* **Pruebas de Backend (Ortiz):** Validación de endpoints con herramientas de prueba y control de respuestas de error.
 
-#### 🔹 Semana 3: Frontend SPA, Responsividad Móvil, Despliegue en la Nube y Seguridad
-* **Maquetación Retro y SPA:** Diseño de la estructura visual clásica (`classic.css`) y programación del controlador de interfaz `public/js/forum.js` con navegación por fragmentos hash y consumo asíncrono con `fetch`.
-* **Diseño Adaptativo Móvil:** Implementación de reglas `@media` para pantallas táctiles, transformando la grilla de dos columnas en una disposición vertical accesible desde celulares.
-* **Sistema de Perfiles Independiente:** Desarrollo del módulo `localStorage` para almacenamiento de identidad en el navegador del cliente, evitando colisiones de nombres entre diferentes usuarios.
-* **Contenedorización y Despliegue Cloud (DevOps):** Creación del archivo `Dockerfile` optimizado con compilación de dependencias PECL (`php-mongodb`), conexión con el repositorio en **GitHub** y despliegue automatizado en **Render.com**.
-* **Migración a Base de Datos Distribuida:** Conexión del backend con el cluster en la nube **MongoDB Atlas**, verificación de latencias y migración de datos.
-* **Auditoría de Seguridad y Sanitización:** Detección y corrección de credenciales mediante variables de entorno del sistema (`MONGODB_URI`), protección con `.gitignore` y sanitización contra inyecciones XSS en el cliente.
+#### 🔹 Semana 3: Frontend SPA, Responsividad Móvil, Despliegue Cloud y Seguridad
+* **Desarrollo del Frontend SPA (Iván y Enzo):** Implementación de `public/js/forum.js` con Hash Routing y consumo asíncrono vía `fetch`.
+* **Adaptabilidad Móvil del HUD (Ignacio y Ortiz):** Ajuste de media queries para transformar la grilla de dos columnas en una sola columna táctil para celulares.
+* **Sistema de Perfiles Independientes (Iván y Enzo):** Desarrollo del módulo `localStorage` para almacenamiento de identidad por dispositivo y autorelleno de autor.
+* **Despliegue Cloud & DevOps (Enzo):** Creación del `Dockerfile`, integración continua (CI/CD) con GitHub y despliegue en **Render.com** conectado a **MongoDB Atlas**.
+* **Auditoría de Seguridad (Enzo):** Detección y corrección de credenciales mediante variables de entorno del sistema (`MONGODB_URI`), configuración de `.gitignore` y sanitización contra inyecciones XSS.
+* **Pruebas Integrales de Campo (Ortiz):** Pruebas de usabilidad en celulares reales de distintos integrantes, detectando y validando la corrección de errores de identidad y visualización.
 
 ---
 
 ### 3.2 Etapa Futura Proyectada (Semanas 4 y 5 - Cierre y Evaluación)
 
-#### 🔹 Semana 4: Pruebas de Estrés, Beta Testing y Moderación
-* **Pruebas de Campo con Usuarios Reales:** Distribución del enlace público entre compañeros de curso para validar la estabilidad concurrente, la legibilidad en diferentes modelos de teléfonos y la persistencia de perfiles.
-* **Monitoreo de Rendimiento en la Nube:** Análisis de tiempos de respuesta del contenedor en Render y consumo de operaciones de lectura/escritura (IOPS) en el cluster de MongoDB Atlas.
-* **Filtro de Contenido Básico:** Incorporación de una lista de palabras vetadas o moderación básica en el backend para prevenir contenido indebido en el entorno escolar.
+#### 🔹 Semana 4: Pruebas Masivas, Beta Testing y Moderación
+* **Pruebas de Estrés con Usuarios Reales (Ortiz y Equipo):** Distribución del enlace público entre compañeros de clase para evaluar la concurrencia en Render y MongoDB Atlas.
+* **Mejoras Visuales y HUD (Ignacio):** Pulido de microinteracciones, avisos visuales adicionales y compatibilidad cross-browser.
+* **Módulo de Moderación Básica (Enzo e Iván):** Incorporación de filtrado básico de palabras en el backend para resguardar las normas de convivencia escolar.
 
 #### 🔹 Semana 5: Optimización Final, Documentación y Presentación
-* **Indexación y Rendimiento:** Creación de índices compuestos en MongoDB (`category_id`, `fecha`) para acelerar las consultas a medida que crezca el volumen de datos.
-* **Preparación del Material de Exposición:** Elaboración de diapositivas explicativas, diagramas de arquitectura y puesta a punto de la demostración interactiva en vivo frente al tribunal evaluador.
-* **Cierre de Proyecto y Entrega Final:** Entrega formal del informe técnico y código fuente en el repositorio oficial.
+* **Optimización de Índices (Enzo):** Creación de índices compuestos en MongoDB (`category_id`, `fecha`) para acelerar búsquedas y consultas.
+* **Armado de la Presentación (Todo el Equipo):** Elaboración de diapositivas técnicas, diagramas de arquitectura y preparación de la demostración en vivo.
+* **Defensa del Proyecto:** Exposición formal del sistema frente al cuerpo docente evaluador.
 
 ---
 
@@ -150,12 +169,12 @@ LÍNEA DE TIEMPO DEL PROYECTO (5 SEMANAS TOTALES)
 
 ### 4.1 Definición del Cliente
 * **Entidad Solicitante:** Institución Educativa / Departamento de Informática y Programación.
-* **Equipo Evaluador:** Profesores y directivos del área técnica a cargo de evaluar las competencias en programación web backend, administración de bases de datos, diseño de interfaces y despliegue de infraestructura.
+* **Equipo Evaluador:** Profesores y directivos del área técnica a cargo de evaluar las competencias del grupo en programación backend, bases de datos NoSQL, diseño de interfaces y despliegue de infraestructura.
 
 ### 4.2 Necesidades y Requerimientos del Cliente
-* Demostrar la capacidad de construir una solución de software funcional e interactiva desde los cimientos (*from scratch*), sin recurrir a plantillas automáticas ni creadores de sitios prediseñados.
-* Integrar conceptos fundamentales de ingeniería de software: separación de responsabilidades (Backend / Frontend / Base de Datos), consumo de APIs mediante JSON y control de versiones con Git.
-* Justificar el uso de bases de datos NoSQL y resolver problemas del mundo real, como la administración de recursos y el almacenamiento limitado en entornos cloud gratuitos.
+* Demostrar la capacidad de construir una solución de software funcional e interactiva desde los cimientos (*from scratch*), trabajando en equipo y aplicando buenas prácticas de desarrollo.
+* Integrar conceptos fundamentales: arquitectura en capas (Backend / Frontend / Base de Datos), consumo de APIs mediante JSON y control de versiones con Git.
+* Justificar el uso de bases de datos NoSQL y resolver problemas del mundo real, como la optimización de cuotas de almacenamiento en la nube.
 
 ---
 
@@ -177,17 +196,35 @@ Comunidad de estudiantes, docentes y usuarios entusiastas de la informática que
 
 ## 6. 🛠️ RECURSOS UTILIZADOS
 
-### 6.1 Recursos Humanos
+### 6.1 Recursos Humanos (Equipo de Proyecto)
 
-* **Líder de Proyecto & Desarrollador Full-Stack (Enzo Andino):**
-  * Responsable de la concepción de la idea, diseño de la arquitectura y redacción del código en PHP nativo.
-  * Diseño del frontend en HTML5/CSS3 y programación de la interactividad en JavaScript Vanilla.
-  * Modelado de datos en MongoDB, configuración de índices y consultas.
-  * Configuración de Docker, control de versiones en GitHub y despliegue en la nube en Render y MongoDB Atlas.
-* **Equipo Docente / Asesor Técnico:**
+* 👑 **Enzo (Líder de Proyecto & Desarrollador Backend):**
+  * Coordinación general del proyecto y planificación de requerimientos.
+  * Arquitectura del backend en PHP nativo (API REST) y conexión Singleton a MongoDB Atlas.
+  * Lógica de supervivencia y algoritmo de auto-purgado (`deleteOne` / `deleteMany`).
+  * Contenedorización con Docker, integración con GitHub y despliegue en Render.com.
+  * Co-desarrollo de la lógica SPA en JavaScript y seguridad de variables de entorno.
+
+* 🌐 **Iván (Desarrollador Frontend):**
+  * Desarrollo de la lógica del cliente en JavaScript Vanilla (`public/js/forum.js`).
+  * Implementación del enrutamiento por hash (`#home`, `#category/...`, `#thread/...`, `#profile`).
+  * Integración de llamadas asíncronas con `fetch` hacia los endpoints de la API de PHP.
+  * Implementación del sistema de perfiles descentralizados y persistencia en `localStorage`.
+
+* 🎨 **Ignacio (Desarrollador de HUD & UI):**
+  * Diseño de la interfaz de usuario (HUD) y maquetación visual completa en `classic.css`.
+  * Creación de la identidad visual retro inspirada en los foros de 2002 (*vBulletin/phpBB*).
+  * Diseño e integración de cursores SVG pixelados temáticos de Windows 98.
+  * Maquetación responsive adaptable para dispositivos móviles y tablets mediante media queries.
+
+* 🔍 **Ortiz (Testeador Principal / QA):**
+  * Planificación y ejecución de pruebas de estrés y validación funcional del sistema.
+  * Control de calidad en dispositivos móviles reales (Android / iOS), evaluando legibilidad y respuesta táctil.
+  * Detección y reporte de fallos de interfaz, usabilidad y persistencia de perfiles.
+  * Validación del flujo de auto-purgado y votaciones comunitarias en tiempo real.
+
+* 🎓 **Equipo Docente / Asesor Técnico:**
   * Supervisión pedagógica, definición de pautas de evaluación y validación de requerimientos académicos.
-* **Equipo de Pruebas (Beta Testers - Compañeros de Clase):**
-  * Pruebas de usabilidad en entornos heterogéneos (diferentes sistemas operativos, tamaños de pantalla y velocidades de conexión).
 
 ---
 
@@ -195,15 +232,15 @@ Comunidad de estudiantes, docentes y usuarios entusiastas de la informática que
 
 #### A. Hardware y Equipamiento
 * Computadoras personales de desarrollo (Procesadores x64, 8GB+ RAM, SO Windows 10/11).
-* Dispositivos móviles inteligentes (Android / iOS) utilizados como terminales de prueba para verificación responsive y táctil.
+* Dispositivos móviles inteligentes (Android / iOS) utilizados por el equipo de QA para pruebas de campo.
 * Conexión a internet de banda ancha para sincronización de repositorios y despliegue en servicios cloud.
 
 #### B. Software de Desarrollo y Herramientas
 * **Entornos de Desarrollo:** Visual Studio Code con extensiones para PHP, JavaScript y Docker.
-* **Control de Versiones:** Git (CLI) y GitHub como plataforma de alojamiento de código y control de cambios.
+* **Control de Versiones:** Git (CLI) y GitHub como plataforma de alojamiento de código, trabajo colaborativo y control de cambios.
 * **Herramientas de Base de Datos:** MongoDB Compass (interfaz gráfica para administración de colecciones e inspección de documentos) y MongoDB Shell (`mongosh`).
 * **Gestor de Dependencias:** Composer para la integración de librerías oficiales de PHP.
-* **Navegadores Web de Prueba:** Google Chrome, Mozilla Firefox y navegadores móviles integrados (Chrome Mobile, Safari iOS).
+* **Navegadores Web de Prueba:** Google Chrome, Mozilla Firefox, Safari iOS y Chrome Mobile.
 
 #### C. Infraestructura Cloud y Servicios en la Nube
 * **Motor de Base de Datos:** **MongoDB Atlas** (Cluster M0 compartido en la nube, con cifrado TLS/SSL y alta disponibilidad 24/7).
@@ -215,13 +252,14 @@ Comunidad de estudiantes, docentes y usuarios entusiastas de la informática que
 
 ## 7. 💡 CONCLUSIÓN Y APRENDIZAJES CLAVE
 
-El desarrollo de *ForoPrueba2002* representó un desafío técnico de gran valor educativo. A lo largo de estas semanas de trabajo se logró transformar una idea conceptual en una plataforma web totalmente funcional, pública y moderna en su funcionamiento interno, preservando una estética clásica retro.
+El desarrollo de *ForoPrueba2002* representó un desafío técnico de gran valor formativo para todo el equipo. A lo largo de estas semanas de trabajo colaborativo se logró transformar una idea conceptual en una plataforma web totalmente funcional, pública y moderna en su funcionamiento interno, preservando una estética clásica retro.
 
 Entre los principales aprendizajes consolidados se destacan:
-1. La comprensión profunda de cómo opera el protocolo HTTP y la construcción manual de una **API REST en PHP sin dependencias de frameworks**, entendiendo la manipulación de cabeceras, rutas y formatos de datos JSON.
-2. La aplicación práctica de **Bases de Datos NoSQL con MongoDB**, comprendiendo las ventajas de los documentos flexibles frente a las tablas relacionales tradicionales y la importancia del uso de patrones de diseño como el *Singleton*.
-3. La resolución de problemas de ingeniería reales, tales como el diseño de un algoritmo de **purgado automático** para optimizar el almacenamiento gratuito y la adaptación de interfaces complejas a **dispositivos móviles**.
-4. El dominio del flujo de trabajo moderno en la nube (**Docker, GitHub, CI/CD, Variables de Entorno y Hosting Cloud**), preparando las bases para futuros proyectos de software a escala profesional.
+1. El valor del **trabajo en equipo y la división de roles** (Backend, Frontend, HUD y Testing), permitiendo abordar un proyecto complejo de forma ordenada y eficiente.
+2. La comprensión profunda de cómo opera el protocolo HTTP y la construcción manual de una **API REST en PHP sin dependencias de frameworks**, entendiendo la manipulación de cabeceras, rutas y formatos de datos JSON.
+3. La aplicación práctica de **Bases de Datos NoSQL con MongoDB**, comprendiendo las ventajas de los documentos flexibles frente a las tablas relacionales tradicionales y la importancia del uso de patrones de diseño como el *Singleton*.
+4. La resolución de problemas de ingeniería reales, tales como el diseño de un algoritmo de **purgado automático** para optimizar el almacenamiento gratuito y la adaptación de interfaces complejas a **dispositivos móviles**.
+5. El dominio del flujo de trabajo moderno en la nube (**Docker, GitHub, CI/CD, Variables de Entorno y Hosting Cloud**), preparando al equipo para futuros desafíos en el desarrollo de software profesional.
 
 ---
 *Documento redactado y estructurado para su consulta, edición y presentación académica.*
