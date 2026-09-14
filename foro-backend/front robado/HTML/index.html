@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForoPrueba2002 - La Comunidad de Internet</title>
+    <link rel="stylesheet" href="css/classic.css">
+</head>
+<body>
+
+<div id="wrapper">
+    <!-- Header -->
+    <header id="header">
+        <div class="logo-area">
+            <h1>ForoPrueba2002</h1>
+            <span class="tagline">Comunidad de Tecnología, Videojuegos y Charla General</span>
+        </div>
+        <div class="search-area">
+            <input type="text" id="search-input" placeholder="Buscar hilos o posts...">
+            <button id="btn-search">Buscar</button>
+        </div>
+    </header>
+
+    <!-- Top Navigation Bar -->
+    <nav id="navbar">
+        <a href="#" onclick="navigateTo('home'); return false;">[ Inicio ]</a>
+        <a href="#" onclick="navigateTo('home'); return false;">[ Categorías ]</a>
+        <a href="#" onclick="openProfileView(); return false;">[ Mi Perfil ]</a>
+        <a href="#tests" onclick="window.location.hash='tests'; return false;">[ 🧪 Pruebas & Benchmark ]</a>
+        <a href="#" onclick="alert('Foro de prueba simulado v1.0 (2002-2009)'); return false;">[ FAQ ]</a>
+        <a href="#" id="profile-notification-link" onclick="openProfileView(); return false;">[ Panel de Usuario (0) ]</a>
+    </nav>
+
+    <!-- Simulation Control Panel -->
+    <div id="sim-control-panel">
+        <div class="sim-info">
+            <strong>ESTADO DEL SIMULADOR:</strong> 
+            Año Simulado: <span id="sim-year">----</span> | 
+            Fecha Actual: <span id="sim-date">----</span> | 
+            Hilos: <span id="sim-threads">0</span> | 
+            Posts: <span id="sim-posts">0</span>
+        </div>
+        <div class="sim-actions">
+            <span>Avanzar Simulación:</span>
+            <button onclick="advanceSimulation(5)">+5 Ticks</button>
+            <button onclick="advanceSimulation(20)">+20 Ticks</button>
+            <button onclick="advanceSimulation(50)">+50 Ticks</button>
+            <button onclick="advanceSimulation(100)">+100 Ticks</button>
+            <button onclick="advanceSimulation(200)">+200 Ticks</button>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div id="breadcrumb">
+        <a href="#" onclick="navigateTo('home'); return false;">ForoPrueba2002</a>
+        <span id="breadcrumb-extra"></span>
+    </div>
+
+    <!-- Header Ad Banner (Web 1.0 Spam) -->
+    <div class="header-ad-banner" id="banner-ipod">
+        <span class="ad-text">🎁 ¡¡¡FELICITACIONES VISITANTE #1.000.000!!! ¡GANASTE UN IPOD NANO 4GB DE REGALO! 🎁</span>
+        <button class="ad-btn" onclick="triggerFakeAdAction('IPOD')">¡RECLAMAR AHORA!</button>
+    </div>
+
+    <!-- Main View Container -->
+    <main id="main-content">
+        <!-- Content dynamically injected by JS -->
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <p>Powered by <strong>vBulletin / phpBB Sim Engine v1.0</strong> &copy; 2002-2009</p>
+        <p>Servidor en ejecución local mediante Python & Flask</p>
+    </footer>
+</div>
+
+<script src="js/forum.js"></script>
+<script src="js/dev_console.js"></script>
+</body>
+</html>

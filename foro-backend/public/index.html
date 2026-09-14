@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForoPrueba2002 - La Comunidad de Internet</title>
+    <link rel="stylesheet" href="css/classic.css">
+</head>
+<body>
+
+<div id="wrapper">
+    <!-- Header -->
+    <header id="header">
+        <div class="logo-area">
+            <h1>🍀 ForoPrueba2002</h1>
+            <span class="tagline">Comunidad de Tecnología, Videojuegos y Charla General</span>
+        </div>
+        <div class="search-area">
+            <input type="text" id="search-input" placeholder="Buscar hilos o posts...">
+            <button id="btn-search">Buscar</button>
+        </div>
+    </header>
+
+    <!-- Top Navigation Bar -->
+    <nav id="navbar">
+        <a href="#home">[ 🏠 Inicio ]</a>
+        <a href="#category/general">[ 💬 Charla General ]</a>
+        <a href="#category/tech">[ 💻 Tecnología ]</a>
+        <a href="#category/gaming">[ 🎮 Videojuegos ]</a>
+        <a href="#" onclick="openProfileView(); return false;">[ 🧑‍💻 Mi Perfil ]</a>
+        <a href="#" onclick="alert('Foro clásico estilo 2002 construido sobre PHP 8.5 y MongoDB.'); return false;">[ ❓ FAQ ]</a>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div id="breadcrumb">
+        <a href="#home">ForoPrueba2002</a>
+        <span id="breadcrumb-extra"></span>
+    </div>
+
+    <!-- Header Ad Banner (Retro 2002) -->
+    <div class="header-ad-banner" id="banner-ipod">
+        <span class="ad-text">🎁 ¡¡¡FELICITACIONES VISITANTE #1.000.000!!! ¡GANASTE UN IPOD NANO 4GB DE REGALO! 🎁</span>
+        <button class="ad-btn" onclick="alert('¡Premio reservado!')">¡RECLAMAR AHORA!</button>
+    </div>
+
+    <!-- Main View Container (Inyectado dinámicamente por forum.js) -->
+    <main id="main-content">
+        <!-- Contenido cargado dinámicamente -->
+    </main>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <p>Powered by <strong>vBulletin / phpBB Engine v1.0</strong> &copy; 2002-2009</p>
+        <p>Servidor en ejecución local mediante <strong>PHP 8.5 + MongoDB NoSQL</strong></p>
+    </footer>
+</div>
+
+<script src="js/forum.js"></script>
+</body>
+</html>

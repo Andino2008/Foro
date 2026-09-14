@@ -1,0 +1,78 @@
+# 🍀 Mini 4chan - Foro Retro (PHP 8.5 + MongoDB)
+
+Proyecto de foro / imageboard tipo 4chan y vBulletin 2002 para la escuela secundaria.
+Construido con **PHP nativo como Backend (API REST)** y **MongoDB** como base de datos NoSQL documental, conectado a una interfaz visual clásica de los 2000s con sistema de supervivencia y extensión de hilos por votación.
+
+---
+
+## 🛠️ Stack Tecnológico
+* **Backend:** PHP 8.5 (NTS x64) - API REST JSON
+* **Base de Datos:** MongoDB Community Server (`mongodb://localhost:27017`)
+* **Base de Datos Utilizada:** `foro_db` (Colecciones: `hilos` y `respuestas`)
+* **Gestor de dependencias:** Composer (librería oficial `mongodb/mongodb`)
+* **Frontend:** HTML5, CSS Retro (`classic.css`) y JavaScript Vanilla (`forum.js` con `fetch`)
+* **Servidor de desarrollo:** Servidor interno de PHP (`php -S localhost:8000 -t public`)
+
+---
+
+## 🚀 Cómo poner en marcha el proyecto
+1. Asegurarse de que el servicio de MongoDB esté iniciado en Windows.
+2. Abrir una terminal en `foro-backend/` y ejecutar:
+   ```bash
+   php -S localhost:8000 -t public
+   ```
+3. Abrir en el navegador:
+   ```text
+   http://localhost:8000/
+   ```
+
+---
+
+## 🎮 Mecánica de Supervivencia y Extensión de Hilos (Bump Limit Gamificado)
+
+Para evitar el consumo infinito de almacenamiento y fomentar la interacción comunitaria:
+1. **Límite Inicial:** Cada hilo nuevo nace con una vida útil de **300 mensajes**.
+2. **Votación de Extensión:** Los usuarios pueden votar en tiempo real tocando `[ 🗳️ Votar para Extender (+100 msgs) ]`. Al acumular 3 votos comunitarios:
+   * El límite se expande: **+100 mensajes**.
+   * Se consume **1 de las 3 extensiones permitidas**.
+3. **Purgado Automático (Delete):** Si un hilo gasta sus **3 extensiones (alcanzando 600 mensajes)** y llega a su límite, se ejecuta automáticamente:
+   * `$coleccionHilos->deleteOne(['_id' => ...])`
+   * `$coleccionRespuestas->deleteMany(['id_hilo' => ...])`
+   El hilo y sus comentarios se eliminan de MongoDB liberando espacio.
+
+---
+
+## 🔌 Endpoints de la API REST
+
+| Método | Endpoint | Descripción | Colección MongoDB |
+|---|---|---|---|
+| `GET` | `/api/forum` | Devuelve categorías y estadísticas globales | `hilos`, `respuestas` |
+| `GET` | `/api/category/{catId}` | Lista los hilos de una categoría con su límite | `hilos` |
+| `POST` | `/api/threads` | Crea un nuevo hilo (`limite_mensajes: 300`, `extensiones_usadas: 0`) | `hilos` (`insertOne`) |
+| `GET` | `/api/thread/{id}` | Devuelve el hilo original, sus respuestas y estado de vida | `hilos`, `respuestas` |
+| `POST` | `/api/thread/{id}/reply` | Guarda una respuesta y evalúa el purgado si llegó al límite | `respuestas` (`insertOne`) |
+| `POST` | `/api/thread/{id}/extender` | Registra voto y extiende +100 mensajes (máx 3 veces) | `hilos` (`updateOne`) |
+| `GET` | `/api/user/me` | Devuelve datos del perfil y conteo de posts | `respuestas` |
+| `GET` | `/api/search?q={query}` | Búsqueda por palabra clave | `hilos` |
+
+---
+
+## 🗂️ Estructura del Proyecto
+
+```text
+foro-backend/
+├── config/
+│   └── database.php       # Singleton de conexión a MongoDB ('foro_db')
+├── public/
+│   ├── css/
+│   │   └── classic.css    # Estilos visuales retro estilo vBulletin 2002
+│   ├── js/
+│   │   └── forum.js       # Controlador del frontend (SPA con fetch a la API PHP)
+│   ├── index.html         # Maquetado principal del foro retro
+│   └── index.php          # Router API REST en PHP (recibe y responde JSON a MongoDB)
+├── src/
+│   └── Models/            # Modelos orientados a objetos (Thread, Post, User)
+├── composer.json          # Dependencias de Composer
+├── seed.php               # Script de siembra de datos de prueba
+└── read.me                # Documentación del proyecto
+```

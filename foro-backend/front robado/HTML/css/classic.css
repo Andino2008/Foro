@@ -1,0 +1,542 @@
+/* Cursor retro pixelado de Windows 98 (SVG Data URI 100% visible) */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Cpolygon points='0,0 0,14 3,11 6,15 8,14 5,10 10,10' fill='%23ffffff' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E") 0 0, default;
+}
+
+body {
+    font-family: Verdana, Tahoma, Arial, sans-serif;
+    font-size: 11px;
+    background-color: #E5E9F0;
+    color: #333333;
+    padding: 15px;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Cpolygon points='0,0 0,14 3,11 6,15 8,14 5,10 10,10' fill='%23ffffff' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E") 0 0, default;
+}
+
+/* Manito pixelada retro para elementos interactivos */
+a, button, input[type="button"], input[type="submit"], select, .sim-actions button, .cat-title, .thread-title, .user-sidebar .username, .post-container {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22' viewBox='0 0 20 22' shape-rendering='crispEdges'%3E%3Cpath d='M7,2 h2 v6 h1 v-2 h2 v2 h1 v-1 h2 v2 h1 v6 h-2 v3 h-7 v-2 h-2 v-4 h2 z' fill='%23ffffff' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E") 7 2, pointer !important;
+}
+
+#wrapper {
+    max-width: 980px;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+    border: 1px solid #708090;
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.2);
+    padding: 10px;
+}
+
+/* Header & Search */
+#header {
+    background: linear-gradient(to bottom, #3B6B9C 0%, #1D3B5E 100%);
+    color: #FFFFFF;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #142840;
+    margin-bottom: 8px;
+}
+
+.logo-area h1 {
+    font-size: 20px;
+    font-family: 'Trebuchet MS', Arial, sans-serif;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px #000000;
+}
+
+.logo-area .tagline {
+    font-size: 10px;
+    color: #DCDCDC;
+    font-style: italic;
+}
+
+.search-area input {
+    font-size: 11px;
+    padding: 3px 5px;
+    border: 1px solid #708090;
+}
+
+.search-area button {
+    font-size: 11px;
+    padding: 2px 8px;
+    cursor: pointer;
+    background: #EFEFEF;
+    border: 1px solid #708090;
+}
+
+/* Navbar */
+#navbar {
+    background-color: #ECEFF4;
+    border: 1px solid #B0C4DE;
+    padding: 6px 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#navbar a {
+    color: #003399;
+    text-decoration: none;
+    margin-right: 12px;
+}
+
+#navbar a:hover {
+    color: #FF6600;
+    text-decoration: underline;
+}
+
+#profile-notification-link {
+    color: #8A1C1C !important;
+    font-weight: bold;
+}
+
+/* Simulation Control Panel */
+#sim-control-panel {
+    background-color: #FFF8DC;
+    border: 1px solid #DEB887;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+}
+
+.sim-actions button {
+    font-size: 10px;
+    font-weight: bold;
+    padding: 3px 8px;
+    margin-left: 4px;
+    background: linear-gradient(to bottom, #F9F9F9, #E2E2E2);
+    border: 1px solid #A0A0A0;
+    cursor: pointer;
+}
+
+.sim-actions button:hover {
+    background: #FFD700;
+}
+
+/* Breadcrumb */
+#breadcrumb {
+    font-size: 11px;
+    margin-bottom: 12px;
+    color: #555555;
+}
+
+#breadcrumb a {
+    color: #003399;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+/* Forum Tables */
+table.forum-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #A9B8C7;
+    margin-bottom: 15px;
+}
+
+table.forum-table th {
+    background: linear-gradient(to bottom, #4A75A0 0%, #2B4E73 100%);
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 6px 10px;
+    text-align: left;
+    border: 1px solid #1D3550;
+}
+
+table.forum-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #D1D9E1;
+    border-right: 1px solid #D1D9E1;
+    vertical-align: middle;
+}
+
+table.forum-table tr.row1 {
+    background-color: #F4F7F9;
+}
+
+table.forum-table tr.row2 {
+    background-color: #E9EEF3;
+}
+
+table.forum-table tr:hover {
+    background-color: #E2E8F0;
+}
+
+.cat-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #003399;
+    text-decoration: none;
+}
+
+.cat-title:hover {
+    color: #FF6600;
+    text-decoration: underline;
+}
+
+.thread-title {
+    font-size: 11px;
+    font-weight: bold;
+    color: #003399;
+    text-decoration: none;
+}
+
+.thread-title:hover {
+    color: #FF6600;
+    text-decoration: underline;
+}
+
+.sub-text {
+    font-size: 10px;
+    color: #666666;
+    margin-top: 2px;
+}
+
+/* Thread / Post View */
+.thread-header {
+    background: #E8EEF5;
+    border: 1px solid #B4C6D8;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.thread-header h2 {
+    font-size: 14px;
+    color: #1E3B5E;
+}
+
+.post-container {
+    border: 1px solid #A9B8C7;
+    margin-bottom: 12px;
+    display: flex;
+}
+
+.user-sidebar {
+    width: 160px;
+    background-color: #EBF0F5;
+    border-right: 1px solid #A9B8C7;
+    padding: 10px;
+    font-size: 10px;
+}
+
+.user-sidebar .username {
+    font-size: 12px;
+    font-weight: bold;
+    color: #003399;
+    margin-bottom: 5px;
+    word-break: break-all;
+}
+
+.user-sidebar .avatar {
+    width: 60px;
+    height: 60px;
+    background-color: #CCD6E0;
+    border: 1px solid #99AABB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: #556677;
+    margin: 5px 0;
+}
+
+.user-sidebar .user-info {
+    line-height: 1.4;
+    color: #444444;
+}
+
+.post-body {
+    flex: 1;
+    background-color: #FFFFFF;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.post-meta {
+    font-size: 10px;
+    color: #777777;
+    border-bottom: 1px solid #E5E9F0;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+}
+
+.post-content {
+    font-size: 11px;
+    line-height: 1.5;
+    color: #222222;
+    min-height: 50px;
+    white-space: pre-wrap;
+}
+
+/* Quotes (Estética vBulletin / phpBB 2004) */
+blockquote.quote {
+    background-color: #0A0A0A;
+    border: 1px solid #4A4A4A;
+    padding: 8px 10px;
+    margin: 8px 0;
+    font-size: 11px;
+    color: #CCCCCC;
+    border-radius: 0px;
+    box-shadow: none;
+}
+
+blockquote.quote .quote-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: #88BEE8;
+    border-bottom: 1px dotted #333333;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+}
+
+blockquote.quote .quote-text {
+    font-style: italic;
+    color: #DDDDDD;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+
+blockquote.quote a.quote-jump-link {
+    color: #FF9900;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 10px;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22' viewBox='0 0 20 22' shape-rendering='crispEdges'%3E%3Cpath d='M7,2 h2 v6 h1 v-2 h2 v2 h1 v-1 h2 v2 h1 v6 h-2 v3 h-7 v-2 h-2 v-4 h2 z' fill='%23ffffff' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E") 7 2, pointer !important;
+}
+
+blockquote.quote a.quote-jump-link:hover {
+    color: #FF6600;
+    text-decoration: underline;
+}
+
+/* Destello de resalte al saltar al mensaje original */
+@keyframes highlight-quote-target-flash {
+    0% { background-color: #FFFF99; border-color: #FF6600; box-shadow: 0 0 12px #FF9900; }
+    50% { background-color: #FFFFCC; border-color: #FF6600; }
+    100% { background-color: #FFFFFF; }
+}
+
+.highlight-quote-target {
+    animation: highlight-quote-target-flash 2.5s ease-out;
+}
+
+.post-signature {
+    margin-top: 15px;
+    padding-top: 5px;
+    border-top: 1px solid #D0D8E0;
+    font-size: 10px;
+    color: #667788;
+    font-style: italic;
+}
+
+/* Pagination */
+.pagination {
+    margin: 10px 0;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.pagination span.page-num, .pagination a.page-num {
+    padding: 2px 6px;
+    border: 1px solid #A9B8C7;
+    background-color: #F0F4F8;
+    color: #003399;
+    text-decoration: none;
+    font-size: 10px;
+}
+
+.pagination span.current {
+    background-color: #2B4E73;
+    color: #FFFFFF;
+    font-weight: bold;
+    border-color: #1D3550;
+}
+
+/* Banners Spam Retro & Pop-ups Web 1.0 / 2.0 */
+
+@keyframes blink-border {
+    0% { border-color: #FF0000; box-shadow: 0 0 10px #FF0000; }
+    50% { border-color: #FFFF00; box-shadow: 0 0 10px #FFFF00; }
+    100% { border-color: #FF0000; box-shadow: 0 0 10px #FF0000; }
+}
+
+@keyframes blink-bg {
+    0% { background-color: #FF0055; color: #FFFFFF; }
+    50% { background-color: #FFFF00; color: #000000; }
+    100% { background-color: #FF0055; color: #FFFFFF; }
+}
+
+.blink-text {
+    animation: blink-bg 0.8s infinite;
+    font-weight: bold;
+    padding: 4px;
+    text-align: center;
+    font-size: 11px;
+}
+
+/* Banner de Cabecera (468x60) */
+.header-ad-banner {
+    background: #000000;
+    border: 3px dashed #FF0000;
+    animation: blink-border 1s infinite;
+    padding: 8px 12px;
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #00FF00;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+}
+
+.header-ad-banner .ad-text {
+    font-weight: bold;
+    color: #FFFF00;
+    text-shadow: 1px 1px #FF0000;
+}
+
+.header-ad-banner .ad-btn {
+    background: #FF0000;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 11px;
+    border: 2px outset #FFFFFF;
+    padding: 4px 8px;
+    animation: blink-bg 0.6s infinite;
+}
+
+/* Banners Laterales / In-feed (300x250 & Skyscrapers) */
+.side-ad-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.ad-box-300 {
+    flex: 1;
+    background: linear-gradient(135deg, #00FFFF, #FF00FF);
+    border: 3px double #FFFF00;
+    animation: blink-border 1.2s infinite;
+    padding: 10px;
+    text-align: center;
+    color: #000000;
+    font-weight: bold;
+    box-shadow: 3px 3px 0px #000;
+}
+
+.ad-box-300 h3 {
+    font-size: 13px;
+    color: #FF0000;
+    background: #FFFF00;
+    padding: 2px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.ad-fake-close {
+    font-size: 9px;
+    color: #666;
+    float: right;
+    border: 1px solid #999;
+    padding: 0 3px;
+    background: #EEE;
+    margin-bottom: 4px;
+}
+
+/* Pop-up Flotante Arrastrable Estilo Windows 98 / XP */
+.win98-window {
+    position: fixed;
+    width: 340px;
+    background-color: #C0C0C0;
+    border: 2px outset #FFFFFF;
+    box-shadow: 6px 6px 15px rgba(0,0,0,0.5);
+    z-index: 10000;
+    font-family: Tahoma, Arial, sans-serif;
+    user-select: none;
+}
+
+.win98-title-bar {
+    background: linear-gradient(to right, #000080, #1084D0);
+    color: #FFFFFF;
+    padding: 4px 6px;
+    font-weight: bold;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move !important;
+}
+
+.win98-close-btn {
+    background: #C0C0C0;
+    color: #000000;
+    border: 1px outset #FFFFFF;
+    font-size: 10px;
+    font-weight: bold;
+    width: 16px;
+    height: 14px;
+    line-height: 12px;
+    text-align: center;
+    padding: 0;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22' viewBox='0 0 20 22' shape-rendering='crispEdges'%3E%3Cpath d='M7,2 h2 v6 h1 v-2 h2 v2 h1 v-1 h2 v2 h1 v6 h-2 v3 h-7 v-2 h-2 v-4 h2 z' fill='%23ffffff' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E") 7 2, pointer !important;
+}
+
+.win98-close-btn:active {
+    border-style: inset;
+}
+
+.win98-content {
+    padding: 12px;
+    font-size: 11px;
+    color: #000000;
+}
+
+.win98-content p {
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+.fake-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.fake-buttons button {
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 10px;
+    background: #C0C0C0;
+    border: 2px outset #FFFFFF;
+}
+
+.fake-buttons button:active {
+    border-style: inset;
+}
+
+/* Footer */
+#footer {
+    border-top: 2px solid #3B6B9C;
+    padding-top: 8px;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 10px;
+    color: #666666;
+}

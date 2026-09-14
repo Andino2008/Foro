@@ -1,0 +1,17 @@
+{
+    "name": "sqinex/foro-backend",
+    "authors": [
+        {
+            "name": "Enzo Andino",
+            "email": "andinoenzo40@gmail.com"
+        }
+    ],
+    "require": {
+        "mongodb/mongodb": "^2.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}

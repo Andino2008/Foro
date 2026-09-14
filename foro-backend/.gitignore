@@ -1,0 +1,7 @@
+# Dependencias de Composer (se instalan solas con composer install)
+/vendor/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+*.log
