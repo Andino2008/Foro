@@ -793,4 +793,180 @@ blockquote.quote a.quote-jump-link:hover {
     }
 }
 
+/* ========================================================
+   📱 ADAPTACIÓN RESPONSIVE TOTAL (MÓVILES Y TABLETS)
+======================================================== */
+
+@media (max-width: 768px) {
+    body {
+        padding: 5px;
+    }
+
+    #wrapper {
+        padding: 6px;
+        box-shadow: none;
+        border: none;
+        max-width: 100%;
+    }
+
+    /* Header y buscador en vertical */
+    #header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .logo-area h1 {
+        font-size: 17px;
+    }
+
+    .search-area {
+        display: flex;
+        width: 100%;
+    }
+
+    .search-area input {
+        flex: 1;
+        font-size: 13px;
+        padding: 6px;
+    }
+
+    .search-area button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    /* Barra de navegación táctil en cuadrícula */
+    #navbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        padding: 6px;
+    }
+
+    #navbar a {
+        background: #FFFFFF;
+        border: 1px solid #B0C4DE;
+        padding: 5px 8px;
+        font-size: 10.5px;
+        margin-right: 0;
+        border-radius: 3px;
+    }
+
+    /* Banner publicitario adaptable */
+    .header-ad-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 6px;
+        padding: 8px;
+    }
+
+    .header-ad-banner .ad-text {
+        font-size: 10px;
+    }
+
+    .header-ad-banner .ad-btn {
+        width: 100%;
+        padding: 6px;
+    }
+
+    /* Tablas de categorías con scroll horizontal suave si es necesario */
+    table.forum-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* VISTA DE HILO: De 2 columnas a 1 columna apilada */
+    .thread-view-grid {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Panel de votación arriba del hilo en móviles */
+    .thread-vote-sidebar {
+        width: 100%;
+        min-width: 100%;
+        position: static;
+        margin-bottom: 5px;
+        padding: 10px;
+    }
+
+    .thread-vote-sidebar .vote-btn {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    /* Posts en móviles: Usuario arriba en barra horizontal, mensaje abajo */
+    .op-post, .reply-post {
+        flex-direction: column;
+    }
+
+    .op-post .user-sidebar, .reply-post .user-sidebar {
+        width: 100%;
+        min-width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #CCD6E0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 8px;
+    }
+
+    .op-post .user-sidebar .avatar, .reply-post .user-sidebar .avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 7px;
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    .op-post .user-sidebar .username, .reply-post .user-sidebar .username {
+        font-size: 11px;
+    }
+
+    .op-post .user-sidebar .user-info, .reply-post .user-sidebar .user-info {
+        font-size: 9px;
+        color: #666;
+    }
+
+    /* Respuestas con indentación pequeña para que no se achique el texto en celular */
+    .reply-post {
+        margin-left: 14px;
+    }
+
+    .reply-post::before {
+        left: -14px;
+        font-size: 15px;
+        top: 6px;
+    }
+
+    /* Formulario de respuesta a ancho completo */
+    .reply-form-box {
+        margin-left: 0;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .reply-form-box input[type="text"],
+    .reply-form-box textarea,
+    #new-thread-box input[type="text"],
+    #new-thread-box textarea {
+        font-size: 13px;
+        width: 100% !important;
+    }
+
+    .reply-form-box button,
+    #new-thread-box button {
+        padding: 8px 16px;
+        font-size: 12px;
+        width: 100%;
+        margin-top: 5px;
+        margin-left: 0 !important;
+    }
+}
+
+
 
