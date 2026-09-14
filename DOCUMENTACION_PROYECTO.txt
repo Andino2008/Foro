@@ -1,0 +1,190 @@
+================================================================================
+           DOCUMENTACION TECNICA Y GESTION DE PROYECTO
+           Proyecto: ForoPrueba2002 - Plataforma Comunitaria Retro NoSQL
+================================================================================
+
+FICHA TECNICA:
+- Nombre del Sistema: ForoPrueba2002 (Mini 4chan / vBulletin Engine)
+- Lider de Proyecto & Desarrollador: Enzo Andino
+- Area / Especialidad: Programacion Web, Arquitectura de Software y Bases de Datos
+- Estado Actual: Version 1.0 - Desplegada en Produccion y Operativa en la Nube
+- Repositorio de Codigo: https://github.com/Andino2008/Foro
+- Acceso en la Nube: Desplegado en Docker sobre Render.com y MongoDB Atlas
+
+
+================================================================================
+1. OBJETIVO
+================================================================================
+
+1.1 OBJETIVO GENERAL:
+Disenar, programar e implementar desde cero una plataforma web integral de foro 
+comunitario e interactivo con estetica clasica de los anos 2000 (estilo vBulletin 
+y phpBB), sustentada sobre una arquitectura desacoplada de alto rendimiento 
+compuesta por un Backend en PHP nativo (API REST) y una base de datos NoSQL 
+orientada a documentos (MongoDB Atlas), con despliegue en la nube, compatibilidad 
+movil total y un sistema innovador de ciclo de vida de mensajes para optimizacion 
+de almacenamiento.
+
+1.2 OBJETIVOS ESPECIFICOS:
+1. Desarrollar una API REST robusta en PHP nativo mediante un enrutador central 
+   (Single Entry Point), procesando peticiones HTTP (GET, POST), manejando 
+   respuestas estructuradas en JSON, control de cabeceras CORS y codigos de 
+   estado sin depender de frameworks externos.
+2. Implementar Persistencia NoSQL con MongoDB para las colecciones de hilos y 
+   respuestas, aplicando consultas optimizadas, inserciones atomicas, ordenamiento 
+   cronologico e indexacion por identificadores ObjectId.
+3. Crear una mecanica de Supervivencia y Auto-Purgado (Bump Limit Gamificado): 
+   cada hilo nace con limite inicial de 300 mensajes ampliable por votacion 
+   comunitaria (+100 msgs hasta 3 veces), con auto-borrado atomico al llegar al 
+   tope para no saturar el espacio gratuito en la nube.
+4. Construir una Interfaz SPA (Single Page Application) Responsive en HTML5, 
+   CSS3 retro y JavaScript Vanilla (fetch asincrono y Hash Routing), brindando 
+   una experiencia fluida sin recarga de pantalla y adaptada a celulares.
+5. Desarrollar un sistema de perfiles descentralizado mediante localStorage, 
+   permitiendo a cada usuario personalizar su propio alias y rango desde su 
+   dispositivo.
+6. Desplegar la plataforma en la nube (Docker + Render + MongoDB Atlas) con 
+   integracion continua (CI/CD con GitHub) y seguridad de credenciales por 
+   variables de entorno (MONGODB_URI).
+
+
+================================================================================
+2. DESCRIPCION DEL SISTEMA
+================================================================================
+
+2.1 VISION GENERAL:
+ForoPrueba2002 es una plataforma de debate tematico que combina la nostalgia 
+visual de principios del 2000 con estandares y tecnologias modernas. Permite 
+navegar por categorias (Charla General, Tecnologia, Videojuegos), crear temas, 
+responder en tiempo real, buscar contenido por palabras clave y salvar hilos 
+valiosos del borrado mediante votos comunitarios.
+
+ARQUITECTURA:
+[ Navegador Web / Smartphone ]
+       |
+       | (Peticiones HTTP GET / POST - JSON)
+       v
+[ Frontend SPA: HTML5 + CSS Retro + JavaScript Vanilla ]
+       |
+       | (Llamadas asincronas con fetch API)
+       v
+[ Backend API REST: PHP 8.2+ en Contenedor Docker (Render) ]
+       |
+       | (Driver Oficial MongoDB PHP / TLS Seguro)
+       v
+[ Base de Datos NoSQL: MongoDB Atlas Cluster M0 (Nube) ]
+       ├── Coleccion 'hilos' (Temas principales y limites de vida)
+       └── Coleccion 'respuestas' (Comentarios vinculados por ObjectId)
+
+2.2 COMPONENTES TECNICOS:
+- Backend & Router REST (public/index.php): Recibe todas las peticiones bajo el 
+  patron Front Controller y responde en formato JSON a rutas como /api/forum, 
+  /api/category/{id}, /api/threads, /api/thread/{id}, /api/thread/{id}/reply, 
+  /api/thread/{id}/extender y /api/search.
+- Capa de Base de Datos (config/database.php): Conexion Singleton a MongoDB 
+  Atlas para reutilizar una unica conexion eficiente y segura.
+- Mecanica de Supervivencia: Controla el espacio en disco. Los hilos nacen con 
+  300 mensajes. Al juntar 3 votos se extienden +100 mensajes (maximo 3 veces). 
+  Al llegar al limite maximo final, se ejecuta deleteOne() y deleteMany() 
+  automaticamente en MongoDB.
+- Frontend SPA y Responsive (forum.js y classic.css): Hash routing (#home, 
+  #category/..., #thread/..., #profile), diseno adaptado al 100% para celulares 
+  con media queries, y gestion de perfiles con localStorage.
+
+
+================================================================================
+3. CRONOGRAMA DE TRABAJO (3 SEMANAS EJECUTADAS + 2 SEMANAS PROYECTADAS)
+================================================================================
+
+ETAPA EJECUTADA (3 SEMANAS DE DESARROLLO INTENSIVO):
+
+- SEMANA 1: PLANIFICACION, ARQUITECTURA Y CONEXION DE DATOS
+  * Analisis de requerimientos y seleccion del stack tecnologico (PHP + MongoDB).
+  * Estructuracion de documentos NoSQL (hilos y respuestas) con claves ObjectId.
+  * Configuracion del entorno PHP 8.2/8.5 con Composer y driver oficial de MongoDB.
+  * Superacion de desafios tecnicos en Windows (extension de MongoDB y patron Singleton).
+
+- SEMANA 2: DESARROLLO DEL BACKEND REST Y LOGICA DE NEGOCIO
+  * Construccion del Router REST centralizado en PHP para solicitudes GET y POST.
+  * Programacion de endpoints de categorias, hilos, respuestas y buscador con Regex.
+  * Desarrollo del algoritmo de supervivencia comunitaria y purgado automatico 
+    (deleteOne y deleteMany).
+  * Pruebas de persistencia y conteo concurrente en base de datos.
+
+- SEMANA 3: FRONTEND SPA, RESPONSIVIDAD MOVIL, DESPLIEGUE CLOUD Y SEGURIDAD
+  * Diseno de la interfaz retro 2002 (classic.css) y SPA asincrona (forum.js).
+  * Adaptacion responsive total para celulares con media queries y barra tactil.
+  * Sistema de identidad independiente por dispositivo con localStorage.
+  * Creacion del Dockerfile, integracion continua (CI/CD) con GitHub y despliegue 
+    en Render.com conectado a MongoDB Atlas.
+  * Auditoria de seguridad: sanitizacion de credenciales mediante variables de 
+    entorno (MONGODB_URI) y proteccion contra ataques XSS.
+
+ETAPA PROYECTADA A FUTURO (2 SEMANAS DE CIERRE):
+
+- SEMANA 4: PRUEBAS DE ESTRES, BETA TESTING Y MODERACION
+  * Distribucion del foro entre companeros de clase para pruebas masivas en 
+    diferentes celulares y computadoras.
+  * Medicion de tiempos de respuesta del contenedor en Render y uso del cluster Atlas.
+  * Incorporacion de filtro basico de palabras o moderacion para entorno escolar.
+
+- SEMANA 5: OPTIMIZACION FINAL, DOCUMENTACION Y PRESENTACION
+  * Creacion de indices compuestos en MongoDB para optimizar velocidad de consulta.
+  * Preparacion de diapositivas tecnicas y material visual para la defensa del proyecto.
+  * Demostracion en vivo y entrega formal del informe ante los profesores.
+
+
+================================================================================
+4. CLIENTE (COMITENTE)
+================================================================================
+
+- Entidad Solicitante: Institucion Educativa / Departamento de Informatica y Programacion.
+- Equipo Evaluador: Profesores y directivos del area tecnica encargados de calificar 
+  el dominio en desarrollo backend, bases de datos NoSQL, interfaces web y DevOps.
+- Requerimientos del Cliente:
+  * Crear una solucion funcional completa desde cero sin utilizar generadores automaticos.
+  * Demostrar separacion de capas (Backend API / Frontend SPA / Base de Datos).
+  * Justificar el uso de NoSQL y resolver problemas de optimizacion de recursos en la nube.
+
+
+================================================================================
+5. USUARIOS DEL SISTEMA
+================================================================================
+
+- Publico Objetivo: Estudiantes, profesores y amantes de la cultura retro de foros.
+- Perfiles de Usuario:
+  * Usuario Visitante: Lee temas, realiza busquedas y visualiza estadisticas globales.
+  * Usuario Participante: Publica temas, envia respuestas, vota para extender la 
+    vida de los hilos y personaliza su nick y rango en su dispositivo.
+  * Creador del Hilo (OP): Inicia debates con formato destacado en la cabecera.
+  * Administrador: Supervisa el estado de la infraestructura en Render y MongoDB Atlas.
+
+
+================================================================================
+6. RECURSOS UTILIZADOS
+================================================================================
+
+6.1 RECURSOS HUMANOS:
+- Lider de Proyecto & Desarrollador Full-Stack (Enzo Andino): Diseno general, 
+  programacion en PHP nativo, desarrollo frontend en JS/CSS, administracion de 
+  MongoDB y despliegue en Render/Docker.
+- Equipo Docente / Asesores: Guia academica y definicion de criterios de evaluacion.
+- Beta Testers (Companeros de curso): Pruebas de campo en celulares reales.
+
+6.2 RECURSOS MATERIALES Y TECNOLOGICOS:
+- Hardware: Computadoras x64 (8GB+ RAM) y smartphones de prueba (Android/iOS).
+- Software: Visual Studio Code, Git, Docker Desktop, MongoDB Compass y PHP 8.2/8.5.
+- Infraestructura Cloud:
+  * Base de Datos: MongoDB Atlas (Cluster M0 Cloud NoSQL con cifrado TLS).
+  * Hosting: Render.com (Servicio Web en contenedor Linux con Docker).
+  * Control de Versiones: GitHub (Repositorio con CI/CD automatizado).
+- Seguridad: Variables de entorno (MONGODB_URI) y escaneo de secretos con GitHub.
+
+
+================================================================================
+7. CONCLUSION Y APRENDIZAJES CLAVE
+================================================================================
+El proyecto ForoPrueba2002 demostro que es posible construir una aplicacion web 
+moderna, escalable y segura utilizando tecnologias nativas sin intermediarios. 
+Permitio afianzar el dominio de APIs REST, bases de datos no relacionales, 
+algoritmos de gestion de recursos en la nube y adaptabilidad multidispositivo.
