@@ -1028,5 +1028,43 @@ blockquote.quote {
     }
 }
 
+/* ==============================================================================
+   BOTÓN FLOTANTE RETRO DE NAVEGACIÓN RÁPIDA (SUBIR / BAJAR)
+   ============================================================================== */
+.scroll-nav-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    z-index: 99990;
+}
+
+.scroll-nav-btn {
+    background: #0d141e;
+    color: var(--neon-cyan);
+    border: 1px solid var(--border-cyber);
+    padding: 7px 11px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.75);
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.scroll-nav-btn:hover {
+    background: var(--neon-cyan);
+    color: #000000;
+    box-shadow: 0 0 12px var(--neon-cyan-glow);
+    border-color: var(--neon-cyan);
+}
+
 
 

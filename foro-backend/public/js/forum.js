@@ -364,11 +364,11 @@ async function submitNewThread(catId) {
  * Dibuja la columna lateral izquierda de votación (supervivencia), el post original (OP)
  * y las respuestas indentadas más compactas con el formulario al final.
  */
-async function loadThreadView(threadId, page = 1) {
+async function loadThreadView(threadId, page = 1, scrollToBottom = false) {
     const main = document.getElementById("main-content");
     const breadcrumbExtra = document.getElementById("breadcrumb-extra");
     if (!main) return;
-    main.innerHTML = "<p style='padding:15px;'>Cargando tema...</p>";
+    main.innerHTML = "<p style='padding:15px; color:var(--neon-cyan);'>Cargando tema...</p>";
 
     try {
         const res = await fetch(`/api/thread/${threadId}?page=${page}&per_page=10`);
@@ -455,8 +455,32 @@ async function loadThreadView(threadId, page = 1) {
         `;
 
         main.innerHTML = html;
+
+        // Si se solicitó auto-scroll (después de publicar), navegamos suavemente al nuevo mensaje
+        if (scrollToBottom) {
+            setTimeout(() => {
+                const posts = document.querySelectorAll('.op-post, .reply-post');
+                if (posts.length > 0) {
+                    posts[posts.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        }
     } catch (err) {
         main.innerHTML = "<p style='color:var(--neon-red); padding:15px;'>Error cargando el hilo o el hilo ya fue eliminado por límite de mensajes.</p>";
+    }
+}
+
+/**
+ * ⬇️ Desplazamiento rápido hacia la caja de respuesta
+ */
+function scrollToReplyBox() {
+    const replyBox = document.querySelector('.reply-form-box');
+    if (replyBox) {
+        replyBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const textInput = document.getElementById('reply-text');
+        if (textInput) textInput.focus();
+    } else {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 }
 
@@ -661,12 +685,12 @@ async function submitReply(threadId) {
                 return;
             }
 
-            statusDiv.innerHTML = "<span style='color:green;'>¡Mensaje guardado!</span>";
+            statusDiv.innerHTML = "<span style='color:var(--neon-green);'>¡Mensaje guardado!</span>";
             textInput.value = "";
             textInput.disabled = false;
             setTimeout(() => {
-                loadThreadView(threadId);
-            }, 400);
+                loadThreadView(threadId, 1, true); // true = auto-scroll al nuevo mensaje
+            }, 300);
         } else {
             statusDiv.innerHTML = `<span style='color:red;'>Error: ${data.error || "Desconocido"}</span>`;
             textInput.disabled = false;

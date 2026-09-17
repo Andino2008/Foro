@@ -46,6 +46,12 @@ class Database {
 
                 // Enviamos una orden 'ping' de prueba para verificar que la nube responde
                 self::$client->selectDatabase(self::$dbName)->command(['ping' => 1]);
+
+                // ======================================================================
+                // 💡 OPCIONAL (A FUTURO): Auto-purgado por inactividad tras 48hs (Índice TTL nativo):
+                // MongoDB revisa en segundo plano y borra solo lo que supere 48hs (172800 segundos)
+                // self::$client->selectDatabase(self::$dbName)->hilos->createIndex(['fecha' => 1], ['expireAfterSeconds' => 172800]);
+                // ======================================================================
                 
             } catch (\Exception $e) {
                 http_response_code(500);
