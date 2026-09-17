@@ -100,6 +100,34 @@ if ($metodo === 'GET' && $ruta === '/api/forum') {
             'description'  => 'PC Gaming, consolas retro, mods y lanzamientos.',
             'thread_count' => $coleccionHilos->countDocuments(['category_id' => 'gaming']),
             'last_activity'=> 'Ayer'
+        ],
+        [
+            'id'           => 'paranormal',
+            'name'         => 'Paranormal & Misterio',
+            'description'  => 'Casos extraños, leyendas urbanas, creepypastas y misterios sin resolver.',
+            'thread_count' => $coleccionHilos->countDocuments(['category_id' => 'paranormal']),
+            'last_activity'=> 'Reciente'
+        ],
+        [
+            'id'           => 'anecdotas',
+            'name'         => 'Anécdotas & Historias',
+            'description'  => 'Historias personales, anécdotas escolares y vivencias cotidianas.',
+            'thread_count' => $coleccionHilos->countDocuments(['category_id' => 'anecdotas']),
+            'last_activity'=> 'Reciente'
+        ],
+        [
+            'id'           => 'nsfw',
+            'name'         => 'NSFW & Adultos (+18)',
+            'description'  => 'Debates para mayores de edad, humor bizarro y temas picantes.',
+            'thread_count' => $coleccionHilos->countDocuments(['category_id' => 'nsfw']),
+            'last_activity'=> 'Reciente'
+        ],
+        [
+            'id'           => 'consejos',
+            'name'         => 'Consejos & Ayuda Comunitaria',
+            'description'  => 'Preguntas, consejos sobre estudios, relaciones y vida cotidiana.',
+            'thread_count' => $coleccionHilos->countDocuments(['category_id' => 'consejos']),
+            'last_activity'=> 'Reciente'
         ]
     ];
 
@@ -116,17 +144,21 @@ if ($metodo === 'GET' && $ruta === '/api/forum') {
 
 /*
 ==============================================================================
- ENDPOINT 2: GET /api/category/{id} - Lista de Hilos de una Categoría
+ 📌 ENDPOINT 2: GET /api/category/{id} - Lista de Hilos de una Categoría
 ==============================================================================
 Usa una expresión regular (preg_match) para capturar el nombre de la categoría
-(por ejemplo 'general', 'tech' o 'gaming') y busca los hilos correspondientes en Mongo.
+y busca los hilos correspondientes en Mongo.
 */
 if ($metodo === 'GET' && preg_match('#^/api/category/([a-zA-Z0-9_-]+)$#', $ruta, $m)) {
     $catId = $m[1]; // $m[1] contiene la parte capturada en la URL (el ID de categoría)
     $categoryNames = [
-        'general' => 'Charla General & Off-Topic',
-        'tech'    => 'Tecnología & Hardware',
-        'gaming'  => 'Videojuegos & Emulación'
+        'general'    => 'Charla General & Off-Topic',
+        'tech'       => 'Tecnología & Hardware',
+        'gaming'     => 'Videojuegos & Emulación',
+        'paranormal' => 'Paranormal & Misterio',
+        'anecdotas'  => 'Anécdotas & Historias',
+        'nsfw'       => 'NSFW & Adultos (+18)',
+        'consejos'   => 'Consejos & Ayuda Comunitaria'
     ];
 
     $filtro = ($catId === 'general') 
@@ -225,28 +257,34 @@ if ($metodo === 'GET' && preg_match('#^/api/thread/([a-f0-9]{24})$#', $ruta, $m)
     $posts = [];
 
     // Post 0: El mensaje original (OP - Original Post)
+    $likesHilo = isset($hilo['likes']) ? array_values((array) $hilo['likes']) : [];
     $posts[] = [
-        'id'        => (string) $hilo['_id'],
-        'content'   => $hilo['contenido'] ?? $hilo['content'] ?? '',
-        'author'    => [
+        'id'          => (string) $hilo['_id'],
+        'content'     => $hilo['contenido'] ?? $hilo['content'] ?? '',
+        'author'      => [
             'username'  => is_array($hilo['autor'] ?? null) ? ($hilo['autor']['username'] ?? 'Anon') : ($hilo['autor'] ?? 'Anon'),
             'rank'      => 'Creador del Tema',
             'join_date' => '2026'
         ],
-        'timestamp' => $hilo['fecha'] ?? 'Reciente'
+        'timestamp'   => $hilo['fecha'] ?? 'Reciente',
+        'likes'       => $likesHilo,
+        'likes_count' => count($likesHilo)
     ];
 
     // Posts 1..N: Las respuestas de los usuarios
     foreach ($cursorPosts as $p) {
+        $likesPost = isset($p['likes']) ? array_values((array) $p['likes']) : [];
         $posts[] = [
-            'id'        => (string) $p['_id'],
-            'content'   => $p['comentario'] ?? $p['content'] ?? '',
-            'author'    => [
+            'id'          => (string) $p['_id'],
+            'content'     => $p['comentario'] ?? $p['content'] ?? '',
+            'author'      => [
                 'username'  => is_array($p['autor'] ?? null) ? ($p['autor']['username'] ?? 'Anon') : ($p['autor'] ?? 'Anon'),
                 'rank'      => 'Miembro',
                 'join_date' => '2026'
             ],
-            'timestamp' => $p['fecha'] ?? 'Reciente'
+            'timestamp'   => $p['fecha'] ?? 'Reciente',
+            'likes'       => $likesPost,
+            'likes_count' => count($likesPost)
         ];
     }
 
@@ -463,6 +501,99 @@ if ($metodo === 'GET' && $ruta === '/api/search') {
     }
 
     echo json_encode(['threads' => $results], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+/*
+==============================================================================
+ 📌 ENDPOINT 10: POST /api/thread/{id}/like - Dar/Quitar Like a un Hilo (OP)
+==============================================================================
+Usa $addToSet para dar like único y $pull para quitar el like (toggle atómico en MongoDB).
+*/
+if ($metodo === 'POST' && preg_match('#^/api/thread/([a-f0-9]{24})/like$#', $ruta, $m)) {
+    $threadId = $m[1];
+    $data = getJson();
+    $username = trim($data['username'] ?? 'Anónimo');
+
+    $hilo = $coleccionHilos->findOne(['_id' => new ObjectId($threadId)]);
+    if (!$hilo) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Hilo no encontrado o eliminado']);
+        exit;
+    }
+
+    $likes = isset($hilo['likes']) ? array_values((array) $hilo['likes']) : [];
+    $liked = in_array($username, $likes);
+
+    if ($liked) {
+        // Ya dio like -> Quitar Like ($pull)
+        $coleccionHilos->updateOne(
+            ['_id' => new ObjectId($threadId)],
+            ['$pull' => ['likes' => $username]]
+        );
+        $liked = false;
+        $likesCount = max(0, count($likes) - 1);
+    } else {
+        // No dio like -> Agregar Like atómico ($addToSet)
+        $coleccionHilos->updateOne(
+            ['_id' => new ObjectId($threadId)],
+            ['$addToSet' => ['likes' => $username]]
+        );
+        $liked = true;
+        $likesCount = count($likes) + 1;
+    }
+
+    echo json_encode([
+        'status'      => true,
+        'liked'       => $liked,
+        'likes_count' => $likesCount
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+/*
+==============================================================================
+ 📌 ENDPOINT 11: POST /api/post/{id}/like - Dar/Quitar Like a una Respuesta
+==============================================================================
+*/
+if ($metodo === 'POST' && preg_match('#^/api/post/([a-f0-9]{24})/like$#', $ruta, $m)) {
+    $postId = $m[1];
+    $data = getJson();
+    $username = trim($data['username'] ?? 'Anónimo');
+
+    $post = $coleccionRespuestas->findOne(['_id' => new ObjectId($postId)]);
+    if (!$post) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Respuesta no encontrada']);
+        exit;
+    }
+
+    $likes = isset($post['likes']) ? array_values((array) $post['likes']) : [];
+    $liked = in_array($username, $likes);
+
+    if ($liked) {
+        // Ya dio like -> Quitar Like ($pull)
+        $coleccionRespuestas->updateOne(
+            ['_id' => new ObjectId($postId)],
+            ['$pull' => ['likes' => $username]]
+        );
+        $liked = false;
+        $likesCount = max(0, count($likes) - 1);
+    } else {
+        // No dio like -> Agregar Like atómico ($addToSet)
+        $coleccionRespuestas->updateOne(
+            ['_id' => new ObjectId($postId)],
+            ['$addToSet' => ['likes' => $username]]
+        );
+        $liked = true;
+        $likesCount = count($likes) + 1;
+    }
+
+    echo json_encode([
+        'status'      => true,
+        'liked'       => $liked,
+        'likes_count' => $likesCount
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 

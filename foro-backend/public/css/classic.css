@@ -650,6 +650,52 @@ table.forum-table tr:hover {
     color: var(--text-main);
 }
 
+/* Barra de Acciones del Post (Likes / Acciones) */
+.post-actions {
+    margin-top: 8px;
+    padding: 6px 12px;
+    border-top: 1px dashed var(--border-subtle);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: rgba(10, 15, 22, 0.4);
+}
+
+.like-btn {
+    font-size: 10.5px;
+    font-weight: bold;
+    background: #0e1622;
+    color: var(--text-muted);
+    border: 1px solid var(--border-cyber);
+    padding: 3px 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.like-btn:hover {
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+    box-shadow: 0 0 8px var(--neon-cyan-glow);
+    background: #131d2c;
+}
+
+.like-btn.liked {
+    background: #3b0717;
+    color: #ff4d6d;
+    border: 1px solid #ff4d6d;
+    box-shadow: 0 0 10px rgba(255, 77, 109, 0.35);
+}
+
+.like-btn.liked:hover {
+    background: #4c051f;
+    border-color: #ff758f;
+    box-shadow: 0 0 12px rgba(255, 117, 143, 0.5);
+}
+
 /* 4. Formulario de Respuesta & Nuevo Hilo */
 .reply-form-box, .new-thread-box, .profile-box {
     background: #0e1520;

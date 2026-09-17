@@ -533,6 +533,14 @@ function generatePostHTML(post, thread, isOp = false) {
 
     const containerClass = isOp ? 'op-post' : 'reply-post';
 
+    const userProfile = getLocalUserProfile();
+    const likes = Array.isArray(post.likes) ? post.likes : [];
+    const likesCount = post.likes_count !== undefined ? post.likes_count : likes.length;
+    const userLiked = likes.includes(userProfile.username);
+    const targetType = isOp ? 'thread' : 'post';
+    const likeBtnClass = userLiked ? 'like-btn liked' : 'like-btn';
+    const likeBtnText = userLiked ? `❤️ Te gusta (${likesCount})` : `🤍 Like (${likesCount})`;
+
     return `
         <div class="${containerClass}" id="post-${post.id}">
             <div class="user-sidebar">
@@ -545,12 +553,48 @@ function generatePostHTML(post, thread, isOp = false) {
             </div>
             <div class="post-body">
                 <div class="post-meta">
-                    Publicado el ${date} ${isOp ? '<span style="color:#003399; font-weight:bold; float:right;">[POST ORIGINAL - OP]</span>' : ''}
+                    Publicado el ${date} ${isOp ? '<span style="color:var(--neon-amber); font-weight:bold; float:right;">[POST ORIGINAL - OP]</span>' : ''}
                 </div>
                 <div class="post-content">${escapeHtml(content)}</div>
+                <div class="post-actions">
+                    <button class="${likeBtnClass}" id="like-btn-${targetType}-${post.id}" onclick="toggleLike('${targetType}', '${post.id}')">
+                        ${likeBtnText}
+                    </button>
+                </div>
             </div>
         </div>
     `;
+}
+
+/**
+ * ❤️ Dar o quitar Like a un post o hilo en MongoDB
+ */
+async function toggleLike(type, id) {
+    const userProfile = getLocalUserProfile();
+    const btn = document.getElementById(`like-btn-${type}-${id}`);
+    if (btn) {
+        btn.disabled = true;
+    }
+
+    try {
+        const res = await fetch(`/api/${type}/${id}/like`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: userProfile.username })
+        });
+        const data = await res.json();
+
+        if (data.status && btn) {
+            btn.className = data.liked ? "like-btn liked" : "like-btn";
+            btn.innerHTML = data.liked 
+                ? `❤️ Te gusta (${data.likes_count})` 
+                : `🤍 Like (${data.likes_count})`;
+        }
+    } catch (err) {
+        console.error("Error al procesar el like:", err);
+    } finally {
+        if (btn) btn.disabled = false;
+    }
 }
 
 /**
