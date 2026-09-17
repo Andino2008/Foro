@@ -462,11 +462,11 @@ async function loadThreadView(threadId, page = 1) {
 
 /**
  * 🗳️ Función para votar la extensión del hilo (+100 mensajes)
- * Al llegar al 3er voto, dispara confeti y muestra el mensaje con fade-in / fade-out.
+ * Al llegar al 3er voto, dispara confeti y muestra el mensaje flotante.
  */
 async function votarExtension(threadId) {
     const statusDiv = document.getElementById("extender-status");
-    if (statusDiv) statusDiv.innerHTML = "<span style='color:#A0AEC0; font-size:10px;'>Registrando voto...</span>";
+    if (statusDiv) statusDiv.innerHTML = "<span style='color:var(--neon-cyan); font-size:10px;'>⚡ Registrando voto...</span>";
 
     try {
         const res = await fetch(`/api/thread/${threadId}/extender`, { method: "POST" });
@@ -474,48 +474,72 @@ async function votarExtension(threadId) {
 
         if (data.status) {
             if (data.extendido) {
-                // 🎉 ¡Extensión aprobada! Lanzamos la fiesta de confeti y el toast animado
+                // 🎉 ¡Extensión aprobada! Lanzamos la fiesta de confeti y el toast flotante de 2.5s
                 triggerConfetti();
+                showFloatingToast("🎉 ¡Extendido +100 mensajes! De nada gordito 😎");
                 if (statusDiv) {
                     statusDiv.innerHTML = `<div class="toast-extendido">🎉 Extendido, de nada gordito</div>`;
                 }
+
+                // Esperamos 2.5 segundos para que se aprecie la animación antes de refrescar
+                setTimeout(() => {
+                    loadThreadView(threadId);
+                }, 2500);
             } else {
                 if (statusDiv) {
-                    statusDiv.innerHTML = `<div style="color:#58A6FF; font-size:10px; margin-top:6px;">👍 Voto registrado: <strong>${data.votos_actuales}/3</strong></div>`;
+                    statusDiv.innerHTML = `<div style="color:var(--neon-cyan); font-size:10.5px; margin-top:6px; font-weight:bold;">👍 Voto registrado: <strong>${data.votos_actuales}/3</strong></div>`;
                 }
+                setTimeout(() => {
+                    loadThreadView(threadId);
+                }, 1200);
             }
-
-            // Recargamos silenciosamente los datos para refrescar contadores en la columna izquierda
-            setTimeout(() => {
-                loadThreadView(threadId);
-            }, 1200);
         } else {
             if (statusDiv) {
-                statusDiv.innerHTML = `<div style="color:#FF6666; font-size:10px; margin-top:6px;">${data.error || "No se pudo votar"}</div>`;
+                statusDiv.innerHTML = `<div style="color:var(--neon-red); font-size:10px; margin-top:6px;">${data.error || "No se pudo votar"}</div>`;
             }
         }
     } catch (e) {
         if (statusDiv) {
-            statusDiv.innerHTML = `<div style="color:#FF6666; font-size:10px; margin-top:6px;">Error de red al votar</div>`;
+            statusDiv.innerHTML = `<div style="color:var(--neon-red); font-size:10px; margin-top:6px;">Error de red al votar</div>`;
         }
     }
+}
+
+/**
+ * 💬 Cartel flotante temporal en el centro superior de la pantalla (dura 2.5s)
+ */
+function showFloatingToast(message) {
+    const existing = document.getElementById("cyber-floating-toast");
+    if (existing) existing.remove();
+
+    const toast = document.createElement("div");
+    toast.id = "cyber-floating-toast";
+    toast.className = "cyber-toast-floating";
+    toast.innerHTML = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 2600);
 }
 
 /**
  * 🎊 Generador nativo de partículas de confeti en pantalla
  */
 function triggerConfetti() {
-    const colors = ['#FF0055', '#00FF99', '#FFFF00', '#00FFFF', '#FF9900', '#FF00FF', '#FFFFFF', '#3B82F6'];
-    for (let i = 0; i < 45; i++) {
+    const colors = ['#00e5ff', '#f59e0b', '#00ff9d', '#ff3355', '#c084fc', '#ffff00', '#ffffff', '#38bdf8'];
+    for (let i = 0; i < 70; i++) {
         const conf = document.createElement('div');
         conf.className = 'confetti-piece';
         conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        conf.style.left = (window.innerWidth / 2 + (Math.random() * 260 - 130)) + 'px';
-        conf.style.top = (window.innerHeight / 3 + (Math.random() * 60 - 30)) + 'px';
-        conf.style.setProperty('--tx', (Math.random() * 500 - 250) + 'px');
-        conf.style.setProperty('--ty', (Math.random() * 350 + 100) + 'px');
+        conf.style.left = (window.innerWidth / 2 + (Math.random() * 340 - 170)) + 'px';
+        conf.style.top = (window.innerHeight / 3 + (Math.random() * 80 - 40)) + 'px';
+        conf.style.setProperty('--tx', (Math.random() * 600 - 300) + 'px');
+        conf.style.setProperty('--ty', (Math.random() * 450 + 80) + 'px');
         document.body.appendChild(conf);
-        setTimeout(() => conf.remove(), 2200);
+        setTimeout(() => conf.remove(), 2600);
     }
 }
 

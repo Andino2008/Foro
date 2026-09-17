@@ -796,26 +796,59 @@ blockquote.quote {
 }
 
 .toast-extendido {
-    background: linear-gradient(135deg, #059669, #047857);
+    background: linear-gradient(135deg, #065f46 0%, #059669 100%);
     color: #ffffff;
     font-weight: bold;
     font-size: 11px;
-    padding: 9px 8px;
+    padding: 10px 8px;
     border: 2px solid #34d399;
     text-align: center;
     margin-top: 10px;
-    animation: fadeInOut 3.5s forwards;
-    box-shadow: 0 0 14px var(--neon-green-glow);
+    animation: fadeInOut 2.5s forwards;
+    box-shadow: 0 0 16px var(--neon-green-glow);
     text-shadow: 1px 1px 2px #000;
+}
+
+/* Toast Flotante Central de Alta Visibilidad */
+.cyber-toast-floating {
+    position: fixed;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%);
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 13.5px;
+    padding: 12px 24px;
+    border: 2px solid #34d399;
+    box-shadow: 0 0 30px rgba(52, 211, 153, 0.7), 0 8px 25px rgba(0, 0, 0, 0.85);
+    border-radius: 4px;
+    z-index: 100000;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+    animation: toastBounceIn 2.5s ease-in-out forwards;
+    pointer-events: none;
+    text-align: center;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@keyframes toastBounceIn {
+    0%   { opacity: 0; transform: translate(-50%, -25px) scale(0.85); }
+    15%  { opacity: 1; transform: translate(-50%, 0) scale(1.06); }
+    25%  { transform: translate(-50%, 0) scale(1); }
+    80%  { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -25px) scale(0.9); }
 }
 
 .confetti-piece {
     position: fixed;
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
     pointer-events: none;
     z-index: 99999;
-    animation: confettiFall 2.2s ease-out forwards;
+    animation: confettiFall 2.6s ease-out forwards;
 }
 
 @keyframes confettiFall {
@@ -825,7 +858,7 @@ blockquote.quote {
     }
     100% {
         opacity: 0;
-        transform: translate(var(--tx), var(--ty)) scale(0.5) rotate(720deg);
+        transform: translate(var(--tx), var(--ty)) scale(0.4) rotate(900deg);
     }
 }
 
