@@ -1,5 +1,6 @@
 <?php
 // seed.php - Inserta hilos iniciales en MongoDB Atlas (Nube)
+date_default_timezone_set('America/Argentina/Buenos_Aires');
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/config/database.php';

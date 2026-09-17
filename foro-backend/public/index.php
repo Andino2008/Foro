@@ -1,5 +1,8 @@
 <?php
 // public/index.php
+// Establecemos la zona horaria oficial de Argentina (UTC-3)
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+
 // ==============================================================================
 //  ENRUTADOR PRINCIPAL (ROUTER) & API REST DEL FORO
 // ==============================================================================
