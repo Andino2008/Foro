@@ -71,6 +71,59 @@ function handleRoute() {
     }
 }
 
+// Definición de todas las categorías soportadas por el Frontend
+const ALL_CATEGORIES = [
+    {
+        id: 'general',
+        name: 'Charla General & Off-Topic',
+        description: 'Debates, presentaciones, humor y temas varios de la comunidad.',
+        badgeClass: 'badge-general',
+        tag: '💬 General'
+    },
+    {
+        id: 'tech',
+        name: 'Tecnología & Hardware',
+        description: 'Computación, overclocking, placas de video y sistemas operativos.',
+        badgeClass: 'badge-tech',
+        tag: '💻 Tech'
+    },
+    {
+        id: 'gaming',
+        name: 'Videojuegos & Emulación',
+        description: 'PC Gaming, consolas retro, mods y lanzamientos.',
+        badgeClass: 'badge-gaming',
+        tag: '🎮 Gaming'
+    },
+    {
+        id: 'paranormal',
+        name: 'Paranormal & Misterio',
+        description: 'Casos extraños, leyendas urbanas, creepypastas y misterios sin resolver.',
+        badgeClass: 'badge-paranormal',
+        tag: '👻 Paranormal'
+    },
+    {
+        id: 'anecdotas',
+        name: 'Anécdotas & Historias',
+        description: 'Historias personales, anécdotas escolares y vivencias cotidianas.',
+        badgeClass: 'badge-anecdotas',
+        tag: '📖 Anécdotas'
+    },
+    {
+        id: 'nsfw',
+        name: 'NSFW & Adultos (+18)',
+        description: 'Debates para mayores de edad, humor bizarro y temas picantes.',
+        badgeClass: 'badge-nsfw',
+        tag: '🔞 NSFW'
+    },
+    {
+        id: 'consejos',
+        name: 'Consejos & Ayuda Comunitaria',
+        description: 'Preguntas, consejos sobre estudios, relaciones y vida cotidiana.',
+        badgeClass: 'badge-consejos',
+        tag: '💡 Consejos'
+    }
+];
+
 /**
  * 🏠 1. VISTA DE INICIO: Lista de Categorías y Estadísticas Generales
  * Pide datos a 'GET /api/forum' y dibuja la tabla principal.
@@ -78,36 +131,47 @@ function handleRoute() {
 async function loadForumHome() {
     const main = document.getElementById("main-content");
     if (!main) return;
-    main.innerHTML = "<p style='padding:15px;'>Cargando categorías desde MongoDB...</p>";
+    main.innerHTML = "<p style='padding:15px; color:var(--neon-cyan);'>⚡ Conectando con MongoDB Atlas...</p>";
 
     try {
         // Petición a PHP
         const res = await fetch("/api/forum");
         const forum = await res.json();
 
+        // Mapeamos los datos que devolvió el backend
+        const backendCatMap = {};
+        (forum.categories || []).forEach(c => {
+            backendCatMap[c.id] = c;
+        });
+
         let html = `
             <table class="forum-table">
                 <thead>
                     <tr>
-                        <th width="60%">Categoría</th>
-                        <th width="15%" style="text-align:center;">Hilos</th>
-                        <th width="25%">Última Actividad</th>
+                        <th width="58%">Categoría</th>
+                        <th width="14%" style="text-align:center;">Hilos</th>
+                        <th width="28%">Última Actividad</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
 
-        // Recorremos las categorías que nos devolvió PHP
-        (forum.categories || []).forEach((cat, index) => {
+        // Renderizamos todas las categorías (incluyendo las nuevas)
+        ALL_CATEGORIES.forEach((cat, index) => {
             const rowClass = index % 2 === 0 ? "row1" : "row2";
+            const backendData = backendCatMap[cat.id] || {};
+            const threadCount = backendData.thread_count ?? 0;
+            const lastActivity = backendData.last_activity || "Reciente";
+
             html += `
                 <tr class="${rowClass}">
                     <td>
+                        <span class="badge-tag ${cat.badgeClass}">${cat.tag}</span>
                         <a href="#category/${cat.id}" class="cat-title">${escapeHtml(cat.name)}</a>
                         <div class="sub-text">${escapeHtml(cat.description)}</div>
                     </td>
-                    <td style="text-align:center;"><strong>${cat.thread_count}</strong></td>
-                    <td class="sub-text">${cat.last_activity || "Sin actividad"}</td>
+                    <td style="text-align:center;"><strong style="color:var(--neon-cyan);">${threadCount}</strong></td>
+                    <td class="sub-text" style="color:var(--text-sub);">${lastActivity}</td>
                 </tr>
             `;
         });
@@ -116,8 +180,8 @@ async function loadForumHome() {
                 </tbody>
             </table>
 
-            <div style="background:#F4F7F9; border:1px solid #A9B8C7; padding:10px; font-size:11px; margin-top:15px;">
-                <strong>Estadísticas de la Comunidad:</strong><br>
+            <div class="forum-stats-box">
+                <strong style="color:var(--neon-amber);">📊 Estadísticas Globales de la Comunidad:</strong><br>
                 Nuestros miembros han publicado un total de <strong>${forum.stats?.total_posts || 0}</strong> mensajes en <strong>${forum.stats?.total_threads || 0}</strong> hilos.<br>
                 Regla de purgado: <strong>Límite inicial de 300 msgs (ampliable hasta 3 veces por votación comunitaria)</strong>
             </div>
@@ -125,7 +189,7 @@ async function loadForumHome() {
 
         main.innerHTML = html;
     } catch (err) {
-        main.innerHTML = "<p style='color:red; padding:15px;'>Error conectando con la API de PHP / MongoDB.</p>";
+        main.innerHTML = "<p style='color:var(--neon-red); padding:15px;'>Error conectando con la API de PHP / MongoDB.</p>";
     }
 }
 
@@ -137,55 +201,66 @@ async function loadCategoryView(catId) {
     const main = document.getElementById("main-content");
     const breadcrumbExtra = document.getElementById("breadcrumb-extra");
     if (!main) return;
-    main.innerHTML = "<p style='padding:15px;'>Cargando hilos...</p>";
+    main.innerHTML = "<p style='padding:15px; color:var(--neon-cyan);'>Cargando hilos...</p>";
 
     try {
         const res = await fetch(`/api/category/${catId}`);
         const category = await res.json();
         const userProfile = getLocalUserProfile();
 
+        const currentMeta = ALL_CATEGORIES.find(c => c.id === catId) || {
+            id: catId,
+            name: category.name || catId.toUpperCase(),
+            description: category.description || `Hilos de la categoría ${catId}`,
+            badgeClass: 'badge-general',
+            tag: catId
+        };
+
+        const catDisplayName = currentMeta.name;
+        const catDescription = currentMeta.description;
+
         // Actualizamos la ruta en la barra de navegación (Breadcrumb)
         if (breadcrumbExtra) {
-            breadcrumbExtra.innerHTML = ` &gt; <a href="#category/${category.id}">${escapeHtml(category.name)}</a>`;
+            breadcrumbExtra.innerHTML = ` &gt; <a href="#category/${catId}">${escapeHtml(catDisplayName)}</a>`;
         }
 
         let html = `
             <div class="thread-header" style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
-                    <h2>Categoría: ${escapeHtml(category.name)}</h2>
-                    <div class="sub-text">${escapeHtml(category.description)}</div>
+                    <h2><span class="badge-tag ${currentMeta.badgeClass}">${currentMeta.tag}</span> ${escapeHtml(catDisplayName)}</h2>
+                    <div class="sub-text">${escapeHtml(catDescription)}</div>
                 </div>
-                <button onclick="toggleNewThreadForm()" style="font-weight:bold; padding:6px 14px; cursor:pointer; background:#2B4E73; color:#FFF; border:1px solid #142840;">
+                <button onclick="toggleNewThreadForm()" class="btn-cyber-primary">
                     ✍️ [ + Crear Nuevo Hilo ]
                 </button>
             </div>
 
             <!-- Formulario oculto para crear nuevo tema (se despliega con el botón) -->
-            <div id="new-thread-box" style="display:none; background:#E0E5E9; border:2px solid #5C7099; padding:15px; margin-bottom:15px;">
-                <h3 style="margin-top:0;">📝 Publicar un nuevo Hilo</h3>
-                <p>
+            <div id="new-thread-box" class="new-thread-box" style="display:none; margin-bottom:15px;">
+                <h3 style="margin-top:0;">📝 Publicar un nuevo Hilo en ${escapeHtml(catDisplayName)}</h3>
+                <p style="margin-bottom:8px;">
                     <label><strong>Tu Nombre / Nick:</strong></label><br>
-                    <input type="text" id="new-thread-author" value="${escapeHtml(userProfile.username)}" placeholder="Tu nick o alias..." style="width:250px;">
+                    <input type="text" id="new-thread-author" value="${escapeHtml(userProfile.username)}" placeholder="Tu nick o alias..." style="width:250px; max-width:100%;">
                 </p>
-                <p>
+                <p style="margin-bottom:8px;">
                     <label><strong>Título del Tema:</strong></label><br>
                     <input type="text" id="new-thread-title" placeholder="Escribe un título claro..." style="width:100%;">
                 </p>
-                <p>
+                <p style="margin-bottom:8px;">
                     <label><strong>Mensaje Inicial:</strong></label><br>
                     <textarea id="new-thread-content" rows="4" style="width:100%;" placeholder="Escribe el contenido de tu post..."></textarea>
                 </p>
-                <button onclick="submitNewThread('${catId}')" style="font-weight:bold; padding:6px 15px; background:#2B4E73; color:#FFF; cursor:pointer;">Publicar Hilo 🚀</button>
-                <button onclick="toggleNewThreadForm()" style="padding:6px 12px; margin-left:10px; cursor:pointer;">Cancelar</button>
+                <button onclick="submitNewThread('${catId}')" class="btn-cyber-primary">Publicar Hilo 🚀</button>
+                <button onclick="toggleNewThreadForm()" class="btn-cyber-accent" style="margin-left:8px;">Cancelar</button>
                 <div id="new-thread-status" style="margin-top:8px;"></div>
             </div>
 
             <table class="forum-table">
                 <thead>
                     <tr>
-                        <th width="50%">Título del Hilo</th>
-                        <th width="15%">Autor</th>
-                        <th width="15%" style="text-align:center;">Mensajes / Límite</th>
+                        <th width="48%">Título del Hilo</th>
+                        <th width="16%">Autor</th>
+                        <th width="16%" style="text-align:center;">Mensajes / Límite</th>
                         <th width="20%">Último Mensaje</th>
                     </tr>
                 </thead>
@@ -193,7 +268,7 @@ async function loadCategoryView(catId) {
         `;
 
         if (!category.threads || category.threads.length === 0) {
-            html += `<tr><td colspan="4" style="text-align:center; padding:25px;">No hay hilos en esta categoría todavía. ¡Sé el primero en crear uno!</td></tr>`;
+            html += `<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">No hay hilos en esta categoría todavía. ¡Sé el primero en crear uno!</td></tr>`;
         } else {
             category.threads.forEach((t, index) => {
                 const rowClass = index % 2 === 0 ? "row1" : "row2";
@@ -208,10 +283,10 @@ async function loadCategoryView(catId) {
                             <a href="#thread/${t.id}" class="thread-title">${escapeHtml(t.title || t.titulo)}</a>
                             <div class="sub-text">Creado el ${t.created_at || t.fecha}</div>
                         </td>
-                        <td class="sub-text"><strong>${escapeHtml(autor)}</strong></td>
+                        <td class="sub-text"><strong style="color:var(--text-main);">${escapeHtml(autor)}</strong></td>
                         <td style="text-align:center;">
-                            <strong>${totalMsgs}</strong> / ${limit}
-                            <div style="font-size:10px; color:#666;">(Ext: ${ext}/3)</div>
+                            <strong style="color:var(--neon-amber);">${totalMsgs}</strong> / <span style="color:var(--text-muted);">${limit}</span>
+                            <div style="font-size:10px; color:var(--text-sub);">(Ext: ${ext}/3)</div>
                         </td>
                         <td class="sub-text">${t.last_activity || t.fecha || 'Reciente'}</td>
                     </tr>
@@ -226,7 +301,7 @@ async function loadCategoryView(catId) {
 
         main.innerHTML = html;
     } catch (err) {
-        main.innerHTML = "<p style='color:red; padding:15px;'>Error cargando la categoría.</p>";
+        main.innerHTML = "<p style='color:var(--neon-red); padding:15px;'>Error cargando la categoría.</p>";
     }
 }
 
@@ -367,13 +442,13 @@ async function loadThreadView(threadId, page = 1) {
 
                     <!-- Formulario de Respuesta (alineado a la derecha con las respuestas) -->
                     <div class="reply-form-box">
-                        <h3 style="margin-top:0; font-size:12px; color:#1E3B5E;">💬 Responder al Tema</h3>
-                        <p>
-                            <input type="text" id="reply-author" value="${escapeHtml(userProfile.username)}" placeholder="Tu Nombre / Nick" style="width:200px; margin-bottom:8px; font-size:11px;">
+                        <h3 style="margin-top:0; font-size:12.5px; color:var(--neon-cyan);">💬 Responder al Tema</h3>
+                        <p style="margin-bottom:8px;">
+                            <input type="text" id="reply-author" value="${escapeHtml(userProfile.username)}" placeholder="Tu Nombre / Nick" style="width:220px; max-width:100%; font-size:11px;">
                         </p>
-                        <textarea id="reply-text" style="width:100%; height:75px; font-family: 'Verdana', sans-serif; font-size:11px; margin-bottom:10px;" placeholder="Escribe tu respuesta..."></textarea>
-                        <button onclick="submitReply('${thread.id}')" style="font-weight:bold; padding:6px 18px; background:#2B4E73; color:#FFF; cursor:pointer; border:1px solid #142840;">Enviar Respuesta</button>
-                        <div id="reply-status" style="display:inline-block; margin-left:10px; color:#555;"></div>
+                        <textarea id="reply-text" style="width:100%; height:80px; margin-bottom:10px;" placeholder="Escribe tu respuesta..."></textarea>
+                        <button onclick="submitReply('${thread.id}')" class="btn-cyber-primary">Enviar Respuesta 🚀</button>
+                        <div id="reply-status" style="display:inline-block; margin-left:12px; color:var(--text-muted);"></div>
                     </div>
                 </div>
             </div>
@@ -381,7 +456,7 @@ async function loadThreadView(threadId, page = 1) {
 
         main.innerHTML = html;
     } catch (err) {
-        main.innerHTML = "<p style='color:red; padding:15px;'>Error cargando el hilo o el hilo ya fue eliminado por límite de mensajes.</p>";
+        main.innerHTML = "<p style='color:var(--neon-red); padding:15px;'>Error cargando el hilo o el hilo ya fue eliminado por límite de mensajes.</p>";
     }
 }
 
@@ -585,29 +660,29 @@ function openProfileView() {
     main.innerHTML = `
         <div class="thread-header">
             <h2>🧑‍💻 Panel de Mi Perfil</h2>
-            <div class="sub-text">Configurá tu identidad y nombre público para este celular o computadora.</div>
+            <div class="sub-text">Configurá tu identidad y nombre público para este dispositivo.</div>
         </div>
-        <div class="post-container" style="padding:15px; display:block; background:#FFFFFF; border:1px solid #A9B8C7;">
-            <h3 style="margin-top:0; color:#1E3B5E;">👤 Datos de Tu Cuenta en este Dispositivo</h3>
+        <div class="profile-box">
+            <h3 style="margin-top:0; color:var(--neon-cyan);">👤 Identidad Local en este Dispositivo</h3>
             
             <div style="margin-top:12px;">
-                <p style="margin-bottom:10px;">
-                    <label><strong>Tu Nick / Nombre público:</strong></label><br>
-                    <input type="text" id="profile-nick-input" value="${escapeHtml(p.username)}" style="width:100%; max-width:280px; padding:6px; font-size:12px; margin-top:4px;">
+                <p style="margin-bottom:12px;">
+                    <label style="color:var(--text-main);"><strong>Tu Nick / Nombre público:</strong></label><br>
+                    <input type="text" id="profile-nick-input" value="${escapeHtml(p.username)}" style="width:100%; max-width:320px; padding:7px; font-size:12px; margin-top:4px;">
                 </p>
-                <p style="margin-bottom:10px;">
-                    <label><strong>Tu Rango / Título personal:</strong></label><br>
-                    <input type="text" id="profile-rank-input" value="${escapeHtml(p.rank)}" style="width:100%; max-width:280px; padding:6px; font-size:12px; margin-top:4px;">
+                <p style="margin-bottom:12px;">
+                    <label style="color:var(--text-main);"><strong>Tu Rango / Título personal:</strong></label><br>
+                    <input type="text" id="profile-rank-input" value="${escapeHtml(p.rank)}" style="width:100%; max-width:320px; padding:7px; font-size:12px; margin-top:4px;">
                 </p>
-                <div style="background:#F4F7F9; border:1px solid #CCD6E0; padding:10px; margin:15px 0; font-size:11px;">
-                    <div>📅 Fecha de Ingreso: <strong>${escapeHtml(p.join_date)}</strong></div>
-                    <div style="margin-top:4px;">💬 Mensajes publicados por vos desde este dispositivo: <strong>${p.my_posts || 0}</strong></div>
+                <div class="forum-stats-box" style="margin:15px 0;">
+                    <div>📅 Fecha de Ingreso: <strong style="color:var(--neon-cyan);">${escapeHtml(p.join_date)}</strong></div>
+                    <div style="margin-top:4px;">💬 Mensajes publicados por vos desde este dispositivo: <strong style="color:var(--neon-amber);">${p.my_posts || 0}</strong></div>
                 </div>
 
-                <button onclick="handleSaveProfile()" style="font-weight:bold; padding:8px 18px; background:#2B4E73; color:#FFF; border:1px solid #142840; cursor:pointer;">
+                <button onclick="handleSaveProfile()" class="btn-cyber-primary">
                     💾 Guardar Mi Perfil
                 </button>
-                <div id="profile-save-status" style="margin-top:8px;"></div>
+                <div id="profile-save-status" style="margin-top:10px;"></div>
             </div>
         </div>
     `;
@@ -619,7 +694,7 @@ function handleSaveProfile() {
     saveLocalUserProfile(nick, rank);
     const status = document.getElementById('profile-save-status');
     if (status) {
-        status.innerHTML = `<span style="color:green; font-weight:bold;">✅ ¡Perfil guardado! Ahora publicarás como <strong>${escapeHtml(nick || 'Anónimo')}</strong>.</span>`;
+        status.innerHTML = `<span style="color:var(--neon-green); font-weight:bold;">✅ ¡Perfil guardado! Ahora publicarás como <strong>${escapeHtml(nick || 'Anónimo')}</strong>.</span>`;
     }
 }
 
@@ -631,7 +706,7 @@ async function loadSearchView(query) {
     const breadcrumbExtra = document.getElementById("breadcrumb-extra");
     if (!main) return;
     if (breadcrumbExtra) breadcrumbExtra.innerHTML = ` &gt; Búsqueda`;
-    main.innerHTML = `<p style='padding:15px;'>Buscando "${escapeHtml(query)}"...</p>`;
+    main.innerHTML = `<p style='padding:15px; color:var(--neon-cyan);'>Buscando "${escapeHtml(query)}"...</p>`;
 
     try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
@@ -641,7 +716,7 @@ async function loadSearchView(query) {
             <div class="thread-header">
                 <h2>Resultados de búsqueda para: "${escapeHtml(query)}"</h2>
             </div>
-            <h4 style="margin:10px 0; color:#1E3B5E;">Hilos Encontrados (${(results.threads || []).length})</h4>
+            <h4 style="margin:12px 0 8px 0; color:var(--neon-cyan); font-size:12px;">Hilos Encontrados (${(results.threads || []).length})</h4>
         `;
 
         if (results.threads && results.threads.length > 0) {
@@ -651,12 +726,12 @@ async function loadSearchView(query) {
             });
             html += `</tbody></table>`;
         } else {
-            html += `<p class="sub-text" style="margin-bottom:15px;">No se encontraron hilos con esa palabra.</p>`;
+            html += `<p class="sub-text" style="margin-bottom:15px; color:var(--text-muted);">No se encontraron hilos con esa palabra.</p>`;
         }
 
         main.innerHTML = html;
     } catch (err) {
-        main.innerHTML = "<p style='color:red;'>Error realizando la búsqueda.</p>";
+        main.innerHTML = "<p style='color:var(--neon-red); padding:15px;'>Error realizando la búsqueda.</p>";
     }
 }
 
